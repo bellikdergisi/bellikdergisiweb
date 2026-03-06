@@ -493,7 +493,7 @@
                 e.preventDefault();
                 const messageEl = document.getElementById('register-message');
                 try {
-                    const res = await fetch('http://localhost:3000/api/register', {
+                    const res = await fetch('/api/register', {
                         method: 'POST', headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({
                             adSoyad: document.getElementById('reg-adSoyad').value, 
@@ -518,7 +518,7 @@
                 e.preventDefault();
                 const messageEl = document.getElementById('login-message');
                 try {
-                    const res = await fetch('http://localhost:3000/api/login', {
+                    const res = await fetch('/api/login', {
                         method: 'POST', headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({
                             email: document.getElementById('log-email').value, 
@@ -546,7 +546,7 @@
                 const messageEl = document.getElementById('basvuru-mesaj');
                 if(!token) return alert('Lütfen giriş yapın.');
                 try {
-                    const res = await fetch('http://localhost:3000/api/basvuru', {
+                    const res = await fetch('/api/basvuru', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                         body: JSON.stringify({ 
@@ -587,7 +587,7 @@
                 msg.style.color = "blue";
 
                 try {
-                    const res = await fetch('http://localhost:3000/api/admin/dergi-yukle', {
+                    const res = await fetch('/api/admin/dergi-yukle', {
                         method: 'POST',
                         headers: { 'Authorization': `Bearer ${token}` },
                         body: formData
@@ -614,7 +614,7 @@
         async function loadDergiler() {
             const container = document.getElementById('dergi-listesi-container');
             try {
-                const res = await fetch('http://localhost:3000/api/dergiler');
+                const res = await fetch('/api/dergiler');
                 const dergiler = await res.json();
                 
                 if(dergiler.length === 0) {
@@ -625,9 +625,9 @@
                 container.innerHTML = dergiler.map(d => `
                     <div class="group flex flex-col items-center text-center animate-fadeIn">
                         <div class="relative aspect-[3/4] w-full overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 bg-gray-100 mb-8 border border-gray-100">
-                            <img src="http://localhost:3000${d.kapakGorseli}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="${d.baslik}">
+                            <img src="${d.kapakGorseli}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="${d.baslik}">
                             <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-6">
-                                <a href="http://localhost:3000${d.pdfDosyasi}" target="_blank" class="bg-white text-black px-8 py-4 text-[10px] font-bold tracking-[0.3em] uppercase hover:bg-[#B11E1E] hover:text-white transition-colors shadow-xl">DERGİYİ OKU / İNDİR</a>
+                                <a href="${d.pdfDosyasi}" target="_blank" class="bg-white text-black px-8 py-4 text-[10px] font-bold tracking-[0.3em] uppercase hover:bg-[#B11E1E] hover:text-white transition-colors shadow-xl">DERGİYİ OKU / İNDİR</a>
                             </div>
                         </div>
                         <div class="space-y-3">
@@ -654,7 +654,7 @@
 
             try {
                 // İstatistikleri Çek
-                const resStat = await fetch('http://localhost:3000/api/admin/istatistikler', { 
+                const resStat = await fetch('/api/admin/istatistikler', { 
                     headers: {'Authorization': `Bearer ${token}`} 
                 });
                 const stats = await resStat.json();
@@ -664,7 +664,7 @@
                 document.getElementById('admin-bekleyen-basvuru').innerText = stats.bekleyenBasvuru || 0;
 
                 // Başvuruları Çek
-                const resApp = await fetch('http://localhost:3000/api/admin/basvurular', { 
+                const resApp = await fetch('/api/admin/basvurular', { 
                     headers: {'Authorization': `Bearer ${token}`} 
                 });
                 const apps = await resApp.json();
@@ -698,7 +698,7 @@
             if(!confirm(`Bu başvuruyu ${durum.toUpperCase()} olarak işaretlemek istediğinize emin misiniz?`)) return;
             const token = localStorage.getItem('token');
             try {
-                const res = await fetch(`http://localhost:3000/api/admin/basvuru/${id}`, {
+                const res = await fetch(`/api/admin/basvuru/${id}`, {
                     method: 'PUT', headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`},
                     body: JSON.stringify({durum})
                 });
