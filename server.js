@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const multer = require('multer'); 
-const nodemailer = require('nodemailer'); // YENİ: E-posta Postacımız
+const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 // Kalıplarımızı çağırıyoruz
@@ -47,7 +47,6 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-
 // === GÜVENLİK KONTROLLERİ (MIDDLEWARE) ===
 const tokenKontrol = (req, res, next) => {
     const token = req.header('Authorization');
@@ -70,6 +69,11 @@ const adminKontrol = (req, res, next) => {
 
 
 // === API YÖNLENDİRMELERİ (ROUTES) ===
+
+// YENİ: Ayrı sekmede açılacak Admin Paneli Rotası
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
 
 // 1. ÜYELİK İŞLEMLERİ
 app.post('/api/register', async (req, res) => {
@@ -108,10 +112,9 @@ app.post('/api/basvuru', tokenKontrol, async (req, res) => {
         const yeniBasvuru = new Application({ kullaniciId: req.user.id, adSoyad: user.adSoyad, basvuruTuru, portfolyo });
         await yeniBasvuru.save();
 
-        // ADMİN MAİLİNE BİLDİRİM GÖNDERME
         const mailOptions = {
             from: `"Bellik Sistem" <${process.env.EMAIL_USER}>`,
-            to: process.env.EMAIL_USER, // Senin belirlediğin adrese gider
+            to: process.env.EMAIL_USER, 
             subject: `📢 Yeni Yazar Başvurusu: ${user.adSoyad}`,
             text: `Merhaba,\n\nSisteme yeni bir "${basvuruTuru}" başvurusu düştü.\n\nBaşvuran: ${user.adSoyad}\nE-Posta: ${user.email}\nPortfolyo/Kendinden Bahset: ${portfolyo}\n\nAdmin panelinden girip onaylayabilir veya reddedebilirsiniz.`
         };
@@ -123,7 +126,6 @@ app.post('/api/basvuru', tokenKontrol, async (req, res) => {
     } catch (error) { res.status(500).json({ mesaj: 'Sunucu hatası.' }); }
 });
 
-
 // 3. ADMIN PANELİ İŞLEMLERİ
 app.get('/api/admin/istatistikler', adminKontrol, async (req, res) => {
     try {
@@ -134,9 +136,18 @@ app.get('/api/admin/istatistikler', adminKontrol, async (req, res) => {
     } catch (error) { res.status(500).json({ mesaj: 'İstatistikler alınamadı.' }); }
 });
 
+// YENİ: Kayıtlı Üyeleri Detaylı Çekme
+app.get('/api/admin/uyeler', adminKontrol, async (req, res) => {
+    try {
+        const uyeler = await User.find().select('-sifre').sort({ createdAt: -1 });
+        res.json(uyeler);
+    } catch (error) { res.status(500).json({ mesaj: 'Üyeler alınamadı.' }); }
+});
+
+// GÜNCELLENDİ: Başvuruları Çekme (Tüm başvuruları veya sadece bekleyenleri)
 app.get('/api/admin/basvurular', adminKontrol, async (req, res) => {
     try {
-        const basvurular = await Application.find({ durum: 'Beklemede' }).sort({ createdAt: -1 });
+        const basvurular = await Application.find().sort({ createdAt: -1 }); // Tüm başvuruları listeler
         res.json(basvurular);
     } catch (error) { res.status(500).json({ mesaj: 'Başvurular alınamadı.' }); }
 });
@@ -149,6 +160,13 @@ app.put('/api/admin/basvuru/:id', adminKontrol, async (req, res) => {
     } catch (error) { res.status(500).json({ mesaj: 'Başvuru güncellenemedi.' }); }
 });
 
+// YENİ: Dergi Silme İşlemi
+app.delete('/api/admin/dergi/:id', adminKontrol, async (req, res) => {
+    try {
+        await Issue.findByIdAndDelete(req.params.id);
+        res.json({ mesaj: 'Dergi sistemden başarıyla silindi!' });
+    } catch (error) { res.status(500).json({ mesaj: 'Dergi silinirken hata oluştu.' }); }
+});
 
 // 4. DERGİ YÜKLEME VE LİSTELEME
 app.post('/api/admin/dergi-yukle', adminKontrol, upload.fields([{ name: 'kapak', maxCount: 1 }, { name: 'pdf', maxCount: 1 }]), async (req, res) => {
@@ -160,14 +178,13 @@ app.post('/api/admin/dergi-yukle', adminKontrol, upload.fields([{ name: 'kapak',
         const yeniDergi = new Issue({ sayiNo, baslik, aciklama, kapakGorseli, pdfDosyasi });
         await yeniDergi.save();
 
-        // TÜM ÜYELERE YENİ DERGİ MAİLİ GÖNDERME
-        const tumUyeler = await User.find({}, 'email'); // Sadece mailleri çek
+        const tumUyeler = await User.find({}, 'email'); 
         const mailListesi = tumUyeler.map(uye => uye.email);
 
         if (mailListesi.length > 0) {
             const mailOptions = {
                 from: `"Bellik Dergisi" <${process.env.EMAIL_USER}>`,
-                bcc: mailListesi, // Gizli kopya, kimse kimsenin mailini göremez
+                bcc: mailListesi, 
                 subject: `🔥 Yeni Sayımız Yayında: ${baslik}!`,
                 html: `
                     <div style="font-family: Arial, sans-serif; max-w-md; margin: auto; padding: 20px; border: 1px solid #eee;">
@@ -175,7 +192,7 @@ app.post('/api/admin/dergi-yukle', adminKontrol, upload.fields([{ name: 'kapak',
                         <p>Heyecanla beklenen <strong>${sayiNo} numaralı ${baslik}</strong> an itibariyle sitemizde yayına girdi.</p>
                         <p style="color: #555;"><i>${aciklama}</i></p>
                         <p>Hemen okumak veya PDF olarak indirmek için aşağıdaki butona tıklayarak sitemize gidebilirsin:</p>
-                        <a href="http://localhost:3000" style="display: inline-block; background-color: #B11E1E; color: white; padding: 10px 20px; text-decoration: none; font-weight: bold; margin-top: 15px; text-transform: uppercase; font-size: 12px;">Hemen Oku</a>
+                        <a href="https://www.bellikdergisi.com" style="display: inline-block; background-color: #B11E1E; color: white; padding: 10px 20px; text-decoration: none; font-weight: bold; margin-top: 15px; text-transform: uppercase; font-size: 12px;">Hemen Oku</a>
                         <br><br>
                         <p style="font-size: 12px; color: #999;">Keyifli okumalar dileriz,<br>Bellik Dergisi Ekibi</p>
                     </div>
@@ -183,15 +200,10 @@ app.post('/api/admin/dergi-yukle', adminKontrol, upload.fields([{ name: 'kapak',
             };
             transporter.sendMail(mailOptions, (err, info) => {
                 if(err) console.log('Üyelere mail hatası:', err);
-                else console.log('Tüm üyelere bildirim maili gönderildi!');
             });
         }
-
-        res.status(201).json({ mesaj: 'Dergi başarıyla yüklendi ve tüm üyelere e-posta gönderildi! 🎉' });
-    } catch (error) {
-        console.error('Dergi yükleme hatası:', error);
-        res.status(500).json({ mesaj: 'Dergi yüklenirken hata oluştu.' });
-    }
+        res.status(201).json({ mesaj: 'Dergi başarıyla yüklendi ve üyelere e-posta gönderildi! 🎉' });
+    } catch (error) { res.status(500).json({ mesaj: 'Dergi yüklenirken hata oluştu.' }); }
 });
 
 app.get('/api/dergiler', async (req, res) => {
@@ -199,6 +211,14 @@ app.get('/api/dergiler', async (req, res) => {
         const dergiler = await Issue.find().sort({ createdAt: -1 });
         res.json(dergiler);
     } catch (error) { res.status(500).json({ mesaj: 'Dergiler alınamadı.' }); }
+});
+
+// YENİ: Dergi Okunma/Görüntülenme Sayısını Arttırma
+app.post('/api/dergi/:id/okunma', async (req, res) => {
+    try {
+        await Issue.findByIdAndUpdate(req.params.id, { $inc: { goruntulenme: 1 } });
+        res.json({ mesaj: 'Okunma arttırıldı' });
+    } catch (error) { res.status(500).json({ mesaj: 'Hata' }); }
 });
 
 // Sunucuyu dinlemeye başlıyoruz
