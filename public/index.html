@@ -1,25 +1,64 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bellik Dergisi - 2 Aylık Marka Dergisi</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Megrim&family=Montserrat:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Megrim&family=Montserrat:wght@300;400;700;900&display=swap"
+        rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        :root { --brand-red: #B11E1E; }
-        body { font-family: 'Montserrat', sans-serif; scroll-behavior: smooth; }
-        .megrim { font-family: 'Megrim', cursive; }
-        .animate-fadeIn { animation: fadeIn 0.8s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .logo-container { display: flex; flex-direction: column; align-items: center; line-height: 1; user-select: none; }
-        .view-section { display: none; }
-        .view-section.active { display: block; }
+        :root {
+            --brand-red: #B11E1E;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .megrim {
+            font-family: 'Megrim', cursive;
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1;
+            user-select: none;
+        }
+
+        .view-section {
+            display: none;
+        }
+
+        .view-section.active {
+            display: block;
+        }
     </style>
 </head>
+
 <body class="bg-white text-black selection:bg-[#B11E1E] selection:text-white">
 
     <nav class="bg-[#B11E1E] text-white sticky top-0 z-50 border-b border-white/10 shadow-lg">
@@ -27,24 +66,31 @@
             <div class="flex items-center justify-between h-28">
                 <div class="cursor-pointer" onclick="showView('home')">
                     <div class="logo-container">
-                        <img src="BellikBeyaz.png" alt="Bellik Dergisi Logo" class="h-20 w-auto drop-shadow-md hover:scale-105 transition-transform duration-300">
+                        <img src="BellikBeyaz.png" alt="Bellik Dergisi Logo"
+                            class="h-20 w-auto drop-shadow-md hover:scale-105 transition-transform duration-300">
                     </div>
                 </div>
 
                 <div class="hidden md:flex items-baseline space-x-10 text-[11px] font-bold uppercase tracking-[0.35em]">
-                    <a href="javascript:void(0)" onclick="showView('home')" class="hover:opacity-60 transition-opacity">Anasayfa</a>
-                    <a href="javascript:void(0)" onclick="showView('issues')" class="hover:opacity-60 transition-opacity">Sayılar</a>
-                    <a href="javascript:void(0)" onclick="showView('blogs')" class="hover:opacity-60 transition-opacity">Blog</a>
-                    <a href="javascript:void(0)" onclick="showView('about')" class="hover:opacity-60 transition-opacity">Hakkımızda</a>
+                    <a href="javascript:void(0)" onclick="showView('home')"
+                        class="hover:opacity-60 transition-opacity">Anasayfa</a>
+                    <a href="javascript:void(0)" onclick="showView('issues')"
+                        class="hover:opacity-60 transition-opacity">Sayılar</a>
+                    <a href="javascript:void(0)" onclick="showView('blogs')"
+                        class="hover:opacity-60 transition-opacity">Blog</a>
+                    <a href="javascript:void(0)" onclick="showView('about')"
+                        class="hover:opacity-60 transition-opacity">Hakkımızda</a>
                 </div>
 
                 <div class="flex items-center space-x-6">
-                    <button onclick="checkAuthAndRedirect()" class="hover:opacity-60 transition-opacity"><i data-lucide="user"></i></button>
+                    <button onclick="checkAuthAndRedirect()" class="hover:opacity-60 transition-opacity"><i
+                            data-lucide="user"></i></button>
                     <button class="md:hidden" onclick="toggleMenu()"><i data-lucide="menu"></i></button>
                 </div>
             </div>
         </div>
-        <div id="mobile-menu" class="hidden md:hidden bg-[#B11E1E] border-t border-white/10 p-6 flex flex-col space-y-6 uppercase tracking-widest text-xs font-bold">
+        <div id="mobile-menu"
+            class="hidden md:hidden bg-[#B11E1E] border-t border-white/10 p-6 flex flex-col space-y-6 uppercase tracking-widest text-xs font-bold">
             <a href="javascript:void(0)" onclick="showView('home')">Anasayfa</a>
             <a href="javascript:void(0)" onclick="showView('issues')">Sayılar</a>
             <a href="javascript:void(0)" onclick="showView('blogs')">Blog</a>
@@ -54,16 +100,22 @@
     </nav>
 
     <main>
-        
+
         <section id="view-home" class="view-section active animate-fadeIn">
             <div class="relative min-h-[90vh] flex items-center bg-white overflow-hidden py-12">
                 <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                     <div class="order-2 lg:order-1 flex justify-center lg:justify-start">
                         <div class="relative group cursor-pointer" onclick="showView('reader')">
-                            <div class="absolute -inset-6 bg-[#B11E1E]/10 rounded-xl blur-3xl group-hover:bg-[#B11E1E]/20 transition-all"></div>
-                            <img id="hero-cover" src="https://images.unsplash.com/photo-1569154941061-e231b4725ef1?auto=format&fit=crop&w=800&q=80" alt="Son Sayı" class="relative w-full max-w-[450px] aspect-[3/4] object-cover shadow-[30px_30px_70px_rgba(0,0,0,0.15)] hover:-translate-y-4 transition-transform duration-700">
+                            <div
+                                class="absolute -inset-6 bg-[#B11E1E]/10 rounded-xl blur-3xl group-hover:bg-[#B11E1E]/20 transition-all">
+                            </div>
+                            <img id="hero-cover"
+                                src="https://images.unsplash.com/photo-1569154941061-e231b4725ef1?auto=format&fit=crop&w=800&q=80"
+                                alt="Son Sayı"
+                                class="relative w-full max-w-[450px] aspect-[3/4] object-cover shadow-[30px_30px_70px_rgba(0,0,0,0.15)] hover:-translate-y-4 transition-transform duration-700">
                             <div class="absolute top-10 -right-10 bg-black text-white p-6 hidden md:block">
-                                <span class="text-[10px] font-black uppercase tracking-widest block mb-2 opacity-50">Son Yayın</span>
+                                <span class="text-[10px] font-black uppercase tracking-widest block mb-2 opacity-50">Son
+                                    Yayın</span>
                                 <span class="text-3xl font-light tracking-tighter leading-none">#01</span>
                             </div>
                         </div>
@@ -71,17 +123,24 @@
                     <div class="order-1 lg:order-2 space-y-8 lg:pl-12">
                         <div class="flex items-center space-x-4">
                             <div class="h-[2px] w-12 bg-[#B11E1E]"></div>
-                            <span class="text-xs font-black uppercase tracking-[0.5em] text-[#B11E1E]">2 Aylık Marka Dergisi</span>
+                            <span class="text-xs font-black uppercase tracking-[0.5em] text-[#B11E1E]">2 Aylık Marka
+                                Dergisi</span>
                         </div>
                         <h1 class="text-5xl md:text-7xl font-light tracking-tighter leading-tight uppercase">
-                            Bellik Dergisi <br> <span class="text-[#B11E1E]">THY</span> Sayısı
+                            <span id="dyn-hero-title">Bellik Dergisi</span> <br> <span id="dyn-hero-subtitle"
+                                class="text-[#B11E1E]">THY Sayısı</span>
                         </h1>
-                        <p class="text-gray-400 text-xl font-light max-w-lg leading-relaxed">
-                            İkonik markaların tasarım felsefelerini ve stratejik vizyonlarını derinlemesine incelediğimiz dijital kütüphanemizi keşfedin.
+                        <p id="dyn-hero-desc" class="text-gray-400 text-xl font-light max-w-lg leading-relaxed">
+                            İkonik markaların tasarım felsefelerini ve stratejik vizyonlarını derinlemesine
+                            incelediğimiz dijital kütüphanemizi keşfedin.
                         </p>
                         <div class="flex flex-col sm:flex-row gap-6 pt-6">
-                            <button onclick="showView('reader')" class="bg-[#B11E1E] text-white px-12 py-5 font-bold tracking-[0.2em] uppercase text-xs hover:bg-black transition-all duration-500 shadow-xl">OKUMAYA BAŞLA</button>
-                            <button onclick="showView('issues')" class="border border-black/10 px-12 py-5 font-bold tracking-[0.2em] uppercase text-xs hover:bg-zinc-50 transition-all duration-500">TÜM SAYILAR</button>
+                            <button onclick="showView('reader')"
+                                class="bg-[#B11E1E] text-white px-12 py-5 font-bold tracking-[0.2em] uppercase text-xs hover:bg-black transition-all duration-500 shadow-xl">OKUMAYA
+                                BAŞLA</button>
+                            <button onclick="showView('issues')"
+                                class="border border-black/10 px-12 py-5 font-bold tracking-[0.2em] uppercase text-xs hover:bg-zinc-50 transition-all duration-500">TÜM
+                                SAYILAR</button>
                         </div>
                     </div>
                 </div>
@@ -94,28 +153,32 @@
                     <h1 class="text-5xl font-light tracking-[0.2em] uppercase mb-6">Sayılar</h1>
                     <div class="w-24 h-[1px] bg-[#B11E1E] mx-auto"></div>
                 </div>
-                <div id="dergi-listesi-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 max-w-6xl mx-auto">
+                <div id="dergi-listesi-container"
+                    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 max-w-6xl mx-auto">
                     <p class="col-span-full text-center text-gray-400 italic font-light">Dergiler yükleniyor...</p>
                 </div>
             </div>
         </section>
 
-        <section id="view-blogs" class="view-section animate-fadeIn py-24">
+        <section id="view-blogs" class="view-section animate-fadeIn py-24 min-h-screen">
             <div class="max-w-7xl mx-auto px-4">
-                <div class="mb-24">
-                    <h1 class="text-6xl font-light tracking-tighter uppercase mt-4">Blog & Analiz</h1>
-                    <div class="w-20 h-[1px] bg-[#B11E1E] mt-6"></div>
+                <div class="mb-24 text-center">
+                    <h1 class="text-5xl font-light tracking-[0.2em] uppercase mb-6">Blog & Analiz</h1>
+                    <div class="w-24 h-[1px] bg-[#B11E1E] mx-auto"></div>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-                    <article class="group border-b border-gray-100 pb-12">
-                        <div class="aspect-video bg-zinc-50 mb-8 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1542744094-3a31f272c490?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" alt="Post">
-                        </div>
-                        <span class="text-[9px] font-black tracking-[0.3em] uppercase text-[#B11E1E]">Analiz</span>
-                        <h3 class="text-3xl font-light tracking-tight group-hover:text-[#B11E1E] transition-colors leading-tight">Modern Markalarda Tipografi Kullanımı</h3>
-                        <p class="text-gray-400 text-sm leading-relaxed line-clamp-2 font-light mt-4">Tipografi, bir markanın sesidir. Yazı karakterlerinin sessiz gücünü ve tasarım stratejilerini inceliyoruz.</p>
-                        <button class="text-[10px] font-black tracking-[0.4em] uppercase pt-6 flex items-center hover:text-[#B11E1E]">OKU <i data-lucide="arrow-right" class="ml-2 w-4 h-4"></i></button>
-                    </article>
+                <div id="blog-listesi-container" class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                    <p class="col-span-full text-center text-gray-400 italic font-light">Bloglar yükleniyor...</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-blog-detail" class="view-section animate-fadeIn py-24 min-h-screen">
+            <div class="max-w-4xl mx-auto px-4">
+                <button onclick="showView('blogs')"
+                    class="text-[10px] font-black tracking-widest uppercase mb-8 hover:text-[#B11E1E] flex items-center transition-colors"><i
+                        data-lucide="arrow-left" class="mr-2 w-4 h-4"></i> GERİ DÖN</button>
+                <div id="blog-detail-content" class="bg-white p-8 md:p-12 shadow-sm border border-gray-100">
+                    <p class="text-center text-gray-400 italic font-light">Yükleniyor...</p>
                 </div>
             </div>
         </section>
@@ -127,31 +190,41 @@
                         <img src="Bellik Kırmızı.png" alt="Bellik Dergisi Logo" class="h-24 w-auto drop-shadow-sm">
                     </div>
                 </div>
-                <h1 class="text-4xl md:text-6xl font-light tracking-tighter uppercase mb-8">Tasarımı Stratejiyle Buluşturuyoruz.</h1>
-                <p class="text-xl text-gray-500 font-light max-w-3xl mx-auto px-4">Bellik, 2024 yılında Berat Anık tarafından kurulan, marka tasarımının ve stratejik düşüncenin Türkiye'deki en derinlikli temsilcisidir.</p>
+                <h1 id="dyn-about-title" class="text-4xl md:text-6xl font-light tracking-tighter uppercase mb-8">
+                    Tasarımı Stratejiyle Buluşturuyoruz.</h1>
+                <p id="dyn-about-desc" class="text-xl text-gray-500 font-light max-w-3xl mx-auto px-4">Bellik, 2024
+                    yılında Berat Anık tarafından kurulan, marka tasarımının ve stratejik düşüncenin Türkiye'deki en
+                    derinlikli temsilcisidir.</p>
             </div>
             <div class="max-w-7xl mx-auto px-4 py-24 grid grid-cols-1 md:grid-cols-3 gap-16">
                 <div class="space-y-4">
-                    <div class="w-12 h-12 bg-zinc-50 flex items-center justify-center text-[#B11E1E] mb-4"><i data-lucide="compass"></i></div>
+                    <div class="w-12 h-12 bg-zinc-50 flex items-center justify-center text-[#B11E1E] mb-4"><i
+                            data-lucide="compass"></i></div>
                     <h2 class="text-xl font-bold uppercase tracking-widest border-b border-[#B11E1E] pb-2">Kuruluş</h2>
-                    <p class="text-gray-500 font-light">2024 yılında, markaların görsel ve stratejik kimliklerini sanatsal bir bakış açısıyla ele almak amacıyla kuruldu.</p>
+                    <p class="text-gray-500 font-light">2024 yılında, markaların görsel ve stratejik kimliklerini
+                        sanatsal bir bakış açısıyla ele almak amacıyla kuruldu.</p>
                 </div>
                 <div class="space-y-4">
-                    <div class="w-12 h-12 bg-zinc-50 flex items-center justify-center text-[#B11E1E] mb-4"><i data-lucide="target"></i></div>
+                    <div class="w-12 h-12 bg-zinc-50 flex items-center justify-center text-[#B11E1E] mb-4"><i
+                            data-lucide="target"></i></div>
                     <h2 class="text-xl font-bold uppercase tracking-widest border-b border-[#B11E1E] pb-2">Misyon</h2>
-                    <p class="text-gray-500 font-light">Marka dünyasındaki değişimleri analiz ederek, tasarımcılar için nitelikli bir bilgi kaynağı oluşturmak.</p>
+                    <p class="text-gray-500 font-light">Marka dünyasındaki değişimleri analiz ederek, tasarımcılar için
+                        nitelikli bir bilgi kaynağı oluşturmak.</p>
                 </div>
                 <div class="space-y-4">
-                    <div class="w-12 h-12 bg-zinc-50 flex items-center justify-center text-[#B11E1E] mb-4"><i data-lucide="award"></i></div>
+                    <div class="w-12 h-12 bg-zinc-50 flex items-center justify-center text-[#B11E1E] mb-4"><i
+                            data-lucide="award"></i></div>
                     <h2 class="text-xl font-bold uppercase tracking-widest border-b border-[#B11E1E] pb-2">Vizyon</h2>
-                    <p class="text-gray-500 font-light">Türkiye'nin marka kültürü denildiğinde akla gelen ilk ve en prestijli yayın platformu olmak.</p>
+                    <p class="text-gray-500 font-light">Türkiye'nin marka kültürü denildiğinde akla gelen ilk ve en
+                        prestijli yayın platformu olmak.</p>
                 </div>
             </div>
         </section>
 
         <section id="view-reader" class="view-section animate-fadeIn fixed inset-0 z-[100] bg-[#0a0a0a] text-white">
             <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-24 border-b border-white/5">
-                <button onclick="showView('issues')" class="hover:text-[#B11E1E] font-bold tracking-widest text-[10px] flex items-center">
+                <button onclick="showView('issues')"
+                    class="hover:text-[#B11E1E] font-bold tracking-widest text-[10px] flex items-center">
                     <i data-lucide="x" class="mr-3 w-4 h-4"></i> KAPAT
                 </button>
                 <div class="text-center transform scale-75">
@@ -159,26 +232,35 @@
                         <img src="BellikBeyaz.png" alt="Bellik Dergisi Logo" class="h-10 w-auto opacity-80">
                     </div>
                 </div>
-                <button class="text-[10px] font-bold tracking-widest border border-white/10 px-6 py-2 hover:bg-white hover:text-black transition-colors">PDF İNDİR</button>
+                <button
+                    class="text-[10px] font-bold tracking-widest border border-white/10 px-6 py-2 hover:bg-white hover:text-black transition-colors">PDF
+                    İNDİR</button>
             </div>
             <div class="max-w-4xl mx-auto px-4 py-12">
-                <div class="bg-white text-black min-h-[75vh] shadow-2xl relative flex flex-col items-center justify-center p-12 overflow-hidden">
+                <div
+                    class="bg-white text-black min-h-[75vh] shadow-2xl relative flex flex-col items-center justify-center p-12 overflow-hidden">
                     <div class="w-full h-full border border-black/5 p-8 flex flex-col text-center">
                         <div class="flex justify-between items-start mb-16">
                             <span class="text-[10px] font-black tracking-widest text-[#B11E1E]">Bellik.</span>
                             <span id="page-number" class="text-[10px] font-mono text-gray-300">SAYFA 1</span>
                         </div>
                         <div class="flex-grow flex flex-col justify-center">
-                            <h4 class="text-6xl md:text-8xl font-light tracking-tighter mb-8 uppercase megrim">Sayı İçeriği</h4>
-                            <p class="text-gray-400 italic max-w-md mx-auto">"Marka dünyasının kalbine yolculuğumuz devam ediyor."</p>
+                            <h4 class="text-6xl md:text-8xl font-light tracking-tighter mb-8 uppercase megrim">Sayı
+                                İçeriği</h4>
+                            <p class="text-gray-400 italic max-w-md mx-auto">"Marka dünyasının kalbine yolculuğumuz
+                                devam ediyor."</p>
                         </div>
-                        <div class="mt-16 pt-6 border-t border-gray-100 uppercase text-[9px] font-bold tracking-widest text-gray-300">2 Aylık Marka Dergisi</div>
+                        <div
+                            class="mt-16 pt-6 border-t border-gray-100 uppercase text-[9px] font-bold tracking-widest text-gray-300">
+                            2 Aylık Marka Dergisi</div>
                     </div>
                 </div>
                 <div class="mt-8 flex justify-center items-center space-x-12">
-                    <button class="text-[10px] font-bold tracking-widest uppercase hover:text-[#B11E1E]" onclick="updatePage(-1)">ÖNCEKİ</button>
+                    <button class="text-[10px] font-bold tracking-widest uppercase hover:text-[#B11E1E]"
+                        onclick="updatePage(-1)">ÖNCEKİ</button>
                     <span id="page-display" class="text-sm font-light">1 / 32</span>
-                    <button class="text-[10px] font-bold tracking-widest uppercase hover:text-[#B11E1E]" onclick="updatePage(1)">SONRAKİ</button>
+                    <button class="text-[10px] font-bold tracking-widest uppercase hover:text-[#B11E1E]"
+                        onclick="updatePage(1)">SONRAKİ</button>
                 </div>
             </div>
         </section>
@@ -191,17 +273,26 @@
                 </div>
                 <form id="loginForm" class="space-y-6">
                     <div>
-                        <label class="block text-[10px] font-bold tracking-widest uppercase text-gray-500 mb-2">E-Posta</label>
-                        <input type="email" id="log-email" required class="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-[#B11E1E] transition-colors" placeholder="ornek@mail.com">
+                        <label
+                            class="block text-[10px] font-bold tracking-widest uppercase text-gray-500 mb-2">E-Posta</label>
+                        <input type="email" id="log-email" required
+                            class="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-[#B11E1E] transition-colors"
+                            placeholder="ornek@mail.com">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold tracking-widest uppercase text-gray-500 mb-2">Şifre</label>
-                        <input type="password" id="log-sifre" required class="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-[#B11E1E] transition-colors" placeholder="••••••••">
+                        <label
+                            class="block text-[10px] font-bold tracking-widest uppercase text-gray-500 mb-2">Şifre</label>
+                        <input type="password" id="log-sifre" required
+                            class="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-[#B11E1E] transition-colors"
+                            placeholder="••••••••">
                     </div>
-                    <button type="submit" class="w-full bg-[#B11E1E] text-white py-4 text-[10px] font-bold tracking-[0.3em] uppercase hover:bg-black transition-colors duration-300 shadow-lg">GİRİŞ YAP</button>
+                    <button type="submit"
+                        class="w-full bg-[#B11E1E] text-white py-4 text-[10px] font-bold tracking-[0.3em] uppercase hover:bg-black transition-colors duration-300 shadow-lg">GİRİŞ
+                        YAP</button>
                 </form>
                 <p id="login-message" class="mt-4 text-center text-xs font-bold"></p>
-                <p class="mt-8 text-center text-xs text-gray-400">Hesabın yok mu? <a href="javascript:void(0)" onclick="showView('register')" class="text-[#B11E1E] font-bold">Kayıt Ol</a></p>
+                <p class="mt-8 text-center text-xs text-gray-400">Hesabın yok mu? <a href="javascript:void(0)"
+                        onclick="showView('register')" class="text-[#B11E1E] font-bold">Kayıt Ol</a></p>
             </div>
         </section>
 
@@ -213,21 +304,33 @@
                 </div>
                 <form id="registerForm" class="space-y-6">
                     <div>
-                        <label class="block text-[10px] font-bold tracking-widest uppercase text-gray-500 mb-2">Ad Soyad</label>
-                        <input type="text" id="reg-adSoyad" required class="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-[#B11E1E] transition-colors" placeholder="Adınız Soyadınız">
+                        <label class="block text-[10px] font-bold tracking-widest uppercase text-gray-500 mb-2">Ad
+                            Soyad</label>
+                        <input type="text" id="reg-adSoyad" required
+                            class="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-[#B11E1E] transition-colors"
+                            placeholder="Adınız Soyadınız">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold tracking-widest uppercase text-gray-500 mb-2">E-Posta</label>
-                        <input type="email" id="reg-email" required class="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-[#B11E1E] transition-colors" placeholder="ornek@mail.com">
+                        <label
+                            class="block text-[10px] font-bold tracking-widest uppercase text-gray-500 mb-2">E-Posta</label>
+                        <input type="email" id="reg-email" required
+                            class="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-[#B11E1E] transition-colors"
+                            placeholder="ornek@mail.com">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold tracking-widest uppercase text-gray-500 mb-2">Şifre</label>
-                        <input type="password" id="reg-sifre" required class="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-[#B11E1E] transition-colors" placeholder="••••••••">
+                        <label
+                            class="block text-[10px] font-bold tracking-widest uppercase text-gray-500 mb-2">Şifre</label>
+                        <input type="password" id="reg-sifre" required
+                            class="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-[#B11E1E] transition-colors"
+                            placeholder="••••••••">
                     </div>
-                    <button type="submit" class="w-full bg-[#B11E1E] text-white py-4 text-[10px] font-bold tracking-[0.3em] uppercase hover:bg-black transition-colors duration-300 shadow-lg">HESAP OLUŞTUR</button>
+                    <button type="submit"
+                        class="w-full bg-[#B11E1E] text-white py-4 text-[10px] font-bold tracking-[0.3em] uppercase hover:bg-black transition-colors duration-300 shadow-lg">HESAP
+                        OLUŞTUR</button>
                 </form>
                 <p id="register-message" class="mt-4 text-center text-xs font-bold"></p>
-                <p class="mt-8 text-center text-xs text-gray-400">Zaten hesabın var mı? <a href="javascript:void(0)" onclick="showView('login')" class="text-[#B11E1E] font-bold">Giriş Yap</a></p>
+                <p class="mt-8 text-center text-xs text-gray-400">Zaten hesabın var mı? <a href="javascript:void(0)"
+                        onclick="showView('login')" class="text-[#B11E1E] font-bold">Giriş Yap</a></p>
             </div>
         </section>
 
@@ -238,42 +341,75 @@
                         <h1 class="text-4xl font-light tracking-tighter uppercase mt-4">Profilim</h1>
                         <div class="w-20 h-[1px] bg-[#B11E1E] mt-6"></div>
                     </div>
-                    <button onclick="cikisYap()" class="text-xs font-bold text-gray-400 hover:text-[#B11E1E] uppercase tracking-widest border border-gray-200 px-4 py-2">Çıkış Yap</button>
+                    <button onclick="cikisYap()"
+                        class="text-xs font-bold text-gray-400 hover:text-[#B11E1E] uppercase tracking-widest border border-gray-200 px-4 py-2">Çıkış
+                        Yap</button>
                 </div>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-                    <div class="md:col-span-1 space-y-6 bg-zinc-50 p-8 border border-gray-100 flex flex-col items-center">
-                        <div class="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center text-gray-500 mb-2">
+                    <div
+                        class="md:col-span-1 space-y-6 bg-zinc-50 p-8 border border-gray-100 flex flex-col items-center">
+                        <div
+                            class="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center text-gray-500 mb-2">
                             <i data-lucide="user" size="32"></i>
                         </div>
                         <div class="text-center w-full">
                             <h3 id="profile-adSoyad" class="text-xl font-bold">Yükleniyor...</h3>
                             <p id="profile-email" class="text-xs text-gray-500 mt-2">...</p>
-                            
-                            <button id="btn-admin-panel" onclick="window.open('/admin', '_blank')" class="hidden w-full mt-6 bg-black text-white px-4 py-4 text-[9px] font-bold tracking-[0.2em] uppercase hover:bg-[#B11E1E] transition-colors shadow-lg">
+
+                            <button id="btn-admin-panel" onclick="window.open('/admin', '_blank')"
+                                class="hidden w-full mt-6 bg-black text-white px-4 py-4 text-[9px] font-bold tracking-[0.2em] uppercase hover:bg-[#B11E1E] transition-colors shadow-lg">
                                 <i data-lucide="shield" class="inline w-3 h-3 mr-1 mb-0.5"></i> YÖNETİCİ PANELİ
                             </button>
+                        </div>
+                        <div class="w-full mt-6 text-left border-t border-gray-200 pt-6">
+                            <label
+                                class="block text-[10px] font-bold tracking-widest uppercase text-gray-500 mb-2">Hakkımda</label>
+                            <textarea id="profile-hakkimda"
+                                class="w-full border border-gray-200 p-3 text-sm focus:outline-none focus:border-[#B11E1E]"
+                                rows="4" placeholder="Kendinden bahset..."></textarea>
+                            <button onclick="kaydetHakkimda()"
+                                class="w-full mt-2 bg-black text-white px-4 py-3 text-[9px] font-bold tracking-[0.2em] uppercase hover:bg-[#B11E1E] transition-colors">Kaydet</button>
+                            <p id="hakkimda-mesaj" class="mt-2 text-[10px] font-bold text-center"></p>
                         </div>
                     </div>
 
                     <div class="md:col-span-2 space-y-8">
+                        <div class="bg-zinc-50 p-8 border border-gray-100 shadow-sm">
+                            <h3 class="text-2xl font-light tracking-tight uppercase mb-6">Okuduğum Dergiler</h3>
+                            <div id="liste-okunan-dergiler" class="grid grid-cols-2 md:grid-cols-3 gap-6">
+                                <p class="text-[10px] text-gray-500 font-bold tracking-widest uppercase col-span-full">
+                                    Henüz dergi okunmadı.</p>
+                            </div>
+                        </div>
+
                         <div class="bg-white p-8 border border-gray-100 shadow-sm">
                             <h3 class="text-2xl font-light tracking-tight uppercase mb-4">Yazar Başvurusu</h3>
-                            <p class="text-gray-500 font-light text-sm mb-6">Bellik Dergisi'nde veya blog bölümümüzde yazar olmak ister misin? Başvurunu hemen yap, ekibimiz değerlendirsin.</p>
-                            
+                            <p class="text-gray-500 font-light text-sm mb-6">Bellik Dergisi'nde veya blog bölümümüzde
+                                yazar olmak ister misin? Başvurunu hemen yap, ekibimiz değerlendirsin.</p>
+
                             <form id="basvuruForm" class="space-y-4">
                                 <div>
-                                    <label class="block text-[10px] font-bold tracking-widest uppercase text-gray-500 mb-2">Başvuru Türü</label>
-                                    <select id="app-turu" class="w-full border border-gray-200 p-3 text-sm focus:outline-none focus:border-[#B11E1E]">
+                                    <label
+                                        class="block text-[10px] font-bold tracking-widest uppercase text-gray-500 mb-2">Başvuru
+                                        Türü</label>
+                                    <select id="app-turu"
+                                        class="w-full border border-gray-200 p-3 text-sm focus:outline-none focus:border-[#B11E1E]">
                                         <option value="Blog Yazarı">Blog Yazarı</option>
                                         <option value="Dergi Yazarı">Dergi Yazarı</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] font-bold tracking-widest uppercase text-gray-500 mb-2">Kendinden Bahset / Portfolyon</label>
-                                    <textarea id="app-portfolyo" rows="4" required class="w-full border border-gray-200 p-3 text-sm focus:outline-none focus:border-[#B11E1E]" placeholder="Geçmiş tecrübelerin, yazıların veya portfolyo linkin..."></textarea>
+                                    <label
+                                        class="block text-[10px] font-bold tracking-widest uppercase text-gray-500 mb-2">Kendinden
+                                        Bahset / Portfolyon</label>
+                                    <textarea id="app-portfolyo" rows="4" required
+                                        class="w-full border border-gray-200 p-3 text-sm focus:outline-none focus:border-[#B11E1E]"
+                                        placeholder="Geçmiş tecrübelerin, yazıların veya portfolyo linkin..."></textarea>
                                 </div>
-                                <button type="submit" class="bg-black text-white px-8 py-4 text-[10px] font-bold tracking-[0.3em] uppercase hover:bg-[#B11E1E] transition-colors">BAŞVURU GÖNDER</button>
+                                <button type="submit"
+                                    class="bg-black text-white px-8 py-4 text-[10px] font-bold tracking-[0.3em] uppercase hover:bg-[#B11E1E] transition-colors">BAŞVURU
+                                    GÖNDER</button>
                                 <p id="basvuru-mesaj" class="mt-2 text-xs font-bold"></p>
                             </form>
                         </div>
@@ -291,14 +427,17 @@
                     <div class="logo-container items-start">
                         <img src="Bellik siyah.png" alt="Bellik Dergisi Logo" class="h-16 w-auto">
                     </div>
-                    <p class="text-gray-400 max-w-sm text-sm font-light leading-relaxed pt-10 uppercase tracking-[0.2em]">
-                        Türkiye'nin Marka Dergisi. Marka tasarımının, stratejisinin ve kimliğinin en derin sularında yolculuğa devam ediyoruz.
+                    <p id="dyn-footer-desc"
+                        class="text-gray-400 max-w-sm text-sm font-light leading-relaxed pt-10 uppercase tracking-[0.2em]">
+                        Türkiye'nin Marka Dergisi. Marka tasarımının, stratejisinin ve kimliğinin en derin sularında
+                        yolculuğa devam ediyoruz.
                     </p>
                 </div>
                 <div class="grid grid-cols-2 gap-20 mt-16 md:mt-0">
                     <div>
                         <h4 class="text-[10px] font-black tracking-widest uppercase mb-8">Hızlı Erişim</h4>
-                        <div class="flex flex-col space-y-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                        <div
+                            class="flex flex-col space-y-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                             <button onclick="showView('home')" class="hover:text-black text-left">Anasayfa</button>
                             <button onclick="showView('issues')" class="hover:text-black text-left">Sayılar</button>
                             <button onclick="showView('about')" class="hover:text-black text-left">Hakkımızda</button>
@@ -306,14 +445,16 @@
                     </div>
                     <div>
                         <h4 class="text-[10px] font-black tracking-widest uppercase mb-8">Sosyal</h4>
-                        <div class="flex flex-col space-y-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                        <div
+                            class="flex flex-col space-y-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                             <a href="#" class="hover:text-black">Instagram</a>
                             <a href="#" class="hover:text-black">LinkedIn</a>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="pt-16 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center text-[9px] tracking-[0.4em] uppercase text-gray-400">
+            <div
+                class="pt-16 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center text-[9px] tracking-[0.4em] uppercase text-gray-400">
                 <span>Türkiye'nin Marka Dergisi. Tüm Hakları Saklıdır.</span>
                 <span class="mt-4 md:mt-0">©2026 Bellik bir Berat Anık Markasıdır.</span>
             </div>
@@ -327,8 +468,9 @@
             const views = document.querySelectorAll('.view-section');
             views.forEach(v => v.classList.remove('active'));
             document.getElementById('view-' + viewId).classList.add('active');
-            
-            if(viewId === 'issues') { loadDergiler(); }
+
+            if (viewId === 'issues') { loadDergiler(); }
+            if (viewId === 'blogs') { loadBlogs(); }
 
             const footer = document.getElementById('footer');
             if (viewId === 'reader') {
@@ -340,7 +482,7 @@
             }
 
             document.getElementById('mobile-menu').classList.add('hidden');
-            window.scrollTo(0,0);
+            window.scrollTo(0, 0);
         }
 
         function toggleMenu() { document.getElementById('mobile-menu').classList.toggle('hidden'); }
@@ -352,47 +494,71 @@
             document.getElementById('page-display').innerText = currentPage + ' / 32';
         }
 
-        function checkAuthAndRedirect() {
+        async function checkAuthAndRedirect() {
             const token = localStorage.getItem('token');
-            if(token) {
-                const user = JSON.parse(localStorage.getItem('kullanici'));
-                document.getElementById('profile-adSoyad').innerText = user.adSoyad;
-                document.getElementById('profile-email').innerText = user.email;
-                
-                const adminBtn = document.getElementById('btn-admin-panel');
-                if(user.rol === 'admin') {
-                    adminBtn.classList.remove('hidden');
-                } else {
-                    adminBtn.classList.add('hidden');
-                }
+            if (token) {
                 showView('profile');
-            } else { 
-                showView('login'); 
+                try {
+                    const res = await fetch('/api/kullanici/profil', { headers: { 'Authorization': `Bearer ${token}` } });
+                    if (res.ok) {
+                        const user = await res.json();
+                        document.getElementById('profile-adSoyad').innerText = user.adSoyad;
+                        document.getElementById('profile-email').innerText = user.email;
+                        document.getElementById('profile-hakkimda').value = user.hakkimda || '';
+
+                        const adminBtn = document.getElementById('btn-admin-panel');
+                        if (user.rol === 'admin') {
+                            adminBtn.classList.remove('hidden');
+                        } else {
+                            adminBtn.classList.add('hidden');
+                        }
+
+                        const okunanContainer = document.getElementById('liste-okunan-dergiler');
+                        if (user.okunanDergiler && user.okunanDergiler.length > 0) {
+                            okunanContainer.innerHTML = user.okunanDergiler.map(d => `
+                                <div class="relative aspect-[3/4] w-full overflow-hidden shadow-sm border border-gray-100 group">
+                                    <img src="${d.kapakGorseli}" class="w-full h-full object-cover">
+                                    <div class="absolute inset-x-0 bottom-0 bg-black/80 p-3 translate-y-full group-hover:translate-y-0 transition-transform">
+                                        <p class="text-[10px] text-white font-bold truncate">${d.baslik}</p>
+                                    </div>
+                                </div>
+                            `).join('');
+                        } else {
+                            okunanContainer.innerHTML = '<p class="text-[10px] text-gray-500 font-bold tracking-widest uppercase col-span-full">Henüz dergi okunmadı.</p>';
+                        }
+                    } else {
+                        cikisYap();
+                    }
+                } catch (err) {
+                    console.error("Profil yüklenemedi", err);
+                }
+            } else {
+                showView('login');
             }
         }
 
-        function cikisYap() { 
+        function cikisYap() {
             localStorage.removeItem('token');
             localStorage.removeItem('kullanici');
-            showView('home'); 
+            showView('home');
         }
 
         const registerForm = document.getElementById('registerForm');
-        if(registerForm) {
+        if (registerForm) {
             registerForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const messageEl = document.getElementById('register-message');
                 try {
                     const res = await fetch('/api/register', {
-                        method: 'POST', headers: {'Content-Type': 'application/json'},
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            adSoyad: document.getElementById('reg-adSoyad').value, 
-                            email: document.getElementById('reg-email').value, 
+                            adSoyad: document.getElementById('reg-adSoyad').value,
+                            email: document.getElementById('reg-email').value,
                             sifre: document.getElementById('reg-sifre').value
                         })
                     });
                     const data = await res.json();
-                    if(res.ok) { 
+                    if (res.ok) {
                         messageEl.style.color = 'green'; messageEl.innerText = 'Başarılı! Yönlendiriliyorsunuz...';
                         setTimeout(() => { showView('login'); registerForm.reset(); messageEl.innerText = ''; }, 1500);
                     } else {
@@ -403,51 +569,51 @@
         }
 
         const loginForm = document.getElementById('loginForm');
-        if(loginForm) {
+        if (loginForm) {
             loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const messageEl = document.getElementById('login-message');
                 try {
                     const res = await fetch('/api/login', {
-                        method: 'POST', headers: {'Content-Type': 'application/json'},
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            email: document.getElementById('log-email').value, 
+                            email: document.getElementById('log-email').value,
                             sifre: document.getElementById('log-sifre').value
                         })
                     });
                     const data = await res.json();
-                    if(res.ok) {
+                    if (res.ok) {
                         localStorage.setItem('token', data.token);
                         localStorage.setItem('kullanici', JSON.stringify(data.kullanici));
                         messageEl.style.color = 'green'; messageEl.innerText = 'Başarılı!';
                         setTimeout(() => { checkAuthAndRedirect(); loginForm.reset(); messageEl.innerText = ''; }, 1000);
-                    } else { 
-                        messageEl.style.color = '#B11E1E'; messageEl.innerText = data.mesaj; 
+                    } else {
+                        messageEl.style.color = '#B11E1E'; messageEl.innerText = data.mesaj;
                     }
                 } catch (err) { messageEl.innerText = 'Bağlantı hatası!'; }
             });
         }
 
         const basvuruForm = document.getElementById('basvuruForm');
-        if(basvuruForm) {
+        if (basvuruForm) {
             basvuruForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const token = localStorage.getItem('token'); 
+                const token = localStorage.getItem('token');
                 const messageEl = document.getElementById('basvuru-mesaj');
-                if(!token) return alert('Lütfen giriş yapın.');
+                if (!token) return alert('Lütfen giriş yapın.');
                 try {
                     const res = await fetch('/api/basvuru', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                        body: JSON.stringify({ 
-                            basvuruTuru: document.getElementById('app-turu').value, 
-                            portfolyo: document.getElementById('app-portfolyo').value 
+                        body: JSON.stringify({
+                            basvuruTuru: document.getElementById('app-turu').value,
+                            portfolyo: document.getElementById('app-portfolyo').value
                         })
                     });
                     const data = await res.json();
-                    if(res.ok) {
+                    if (res.ok) {
                         messageEl.style.color = 'green'; messageEl.innerText = data.mesaj;
-                        basvuruForm.reset(); 
+                        basvuruForm.reset();
                     } else {
                         messageEl.style.color = '#B11E1E'; messageEl.innerText = data.mesaj;
                     }
@@ -458,6 +624,94 @@
         // YENİ EKLENEN KISIM: Ziyaretçi tıklayınca okunma sayısını arttırır
         async function okunmaArttir(id) {
             fetch(`/api/dergi/${id}/okunma`, { method: 'POST' }).catch(err => console.log(err));
+            const token = localStorage.getItem('token');
+            if (token) {
+                fetch(`/api/kullanici/okudum/${id}`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } }).catch(e => { });
+            }
+        }
+
+        async function kaydetHakkimda() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            const msgEl = document.getElementById('hakkimda-mesaj');
+            const hakkimda = document.getElementById('profile-hakkimda').value;
+            msgEl.innerText = "Kaydediliyor..."; msgEl.style.color = "blue";
+            try {
+                const res = await fetch('/api/kullanici/profil', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ hakkimda })
+                });
+                const data = await res.json();
+                msgEl.style.color = res.ok ? "green" : "#B11E1E";
+                msgEl.innerText = data.mesaj;
+            } catch (e) {
+                msgEl.style.color = "#B11E1E"; msgEl.innerText = "Hata oluştu!";
+            }
+        }
+
+        async function loadSettings() {
+            try {
+                const res = await fetch('/api/settings');
+                const ayarlar = await res.json();
+                ayarlar.forEach(ayar => {
+                    const key = ayar.anahtar.replace('ayar-', 'dyn-');
+                    const el = document.getElementById(key);
+                    if (el) {
+                        el.innerText = ayar.deger;
+                    }
+                });
+            } catch (e) { }
+        }
+
+        async function loadBlogs() {
+            const container = document.getElementById('blog-listesi-container');
+            try {
+                const res = await fetch('/api/blogs');
+                const bloglar = await res.json();
+                if (bloglar.length === 0) {
+                    container.innerHTML = '<p class="col-span-full text-center text-gray-400 font-light italic mt-12">Henüz yayınlanmış bir blog bulunmuyor.</p>';
+                    return;
+                }
+                container.innerHTML = bloglar.map(b => `
+                    <article class="group border-b border-gray-100 pb-12 cursor-pointer" onclick="showBlogDetail('${b._id}')">
+                        <div class="aspect-video bg-zinc-50 mb-8 overflow-hidden relative">
+                            <img src="${b.kapakGorseli}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" alt="Post">
+                        </div>
+                        <span class="text-[9px] font-black tracking-[0.3em] uppercase text-[#B11E1E]">${b.kategori}</span>
+                        <h3 class="text-3xl font-light tracking-tight group-hover:text-[#B11E1E] transition-colors leading-tight mt-2">${b.baslik}</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed line-clamp-2 font-light mt-4">${b.ozet}</p>
+                        <button class="text-[10px] font-black tracking-[0.4em] uppercase pt-6 flex items-center hover:text-[#B11E1E]">OKU <i data-lucide="arrow-right" class="ml-2 w-4 h-4"></i></button>
+                    </article>
+                `).join('');
+                lucide.createIcons();
+            } catch (e) {
+                container.innerHTML = '<p class="col-span-full text-center text-[#B11E1E]">Bloglar çekilemedi.</p>';
+            }
+        }
+
+        async function showBlogDetail(id) {
+            showView('blog-detail');
+            const container = document.getElementById('blog-detail-content');
+            container.innerHTML = '<p class="text-center text-gray-400 italic">Yükleniyor...</p>';
+            try {
+                const res = await fetch(`/api/blog/${id}`);
+                const b = await res.json();
+                container.innerHTML = `
+                    <div class="mb-12 text-center">
+                        <span class="text-[10px] font-black tracking-[0.3em] uppercase text-[#B11E1E]">${b.kategori}</span>
+                        <h1 class="text-4xl md:text-5xl font-light tracking-tighter mt-4 mb-6 leading-tight">${b.baslik}</h1>
+                        <p class="text-xs text-gray-400 tracking-widest uppercase">${new Date(b.createdAt).toLocaleDateString('tr-TR')} • <i data-lucide="eye" class="inline w-3 h-3 mb-1"></i> ${b.okunmaSayisi}</p>
+                    </div>
+                    ${b.kapakGorseli ? `<img src="${b.kapakGorseli}" class="w-full aspect-video object-cover mb-12 shadow-sm">` : ''}
+                    <div class="prose prose-lg max-w-none font-light leading-relaxed text-gray-700">
+                        ${b.icerik.split('\\n').map(p => p.trim() ? `<p class="mb-6">${p}</p>` : '').join('')}
+                    </div>
+                `;
+                lucide.createIcons();
+            } catch (e) {
+                container.innerHTML = '<p class="text-center text-[#B11E1E]">Blog yazısı yüklenemedi.</p>';
+            }
         }
 
         async function loadDergiler() {
@@ -465,8 +719,8 @@
             try {
                 const res = await fetch('/api/dergiler');
                 const dergiler = await res.json();
-                
-                if(dergiler.length === 0) {
+
+                if (dergiler.length === 0) {
                     container.innerHTML = '<p class="col-span-full text-center text-gray-400 font-light italic mt-12">Henüz yayınlanmış bir sayı bulunmuyor.</p>';
                     return;
                 }
@@ -486,12 +740,16 @@
                         </div>
                     </div>
                 `).join('');
-                
+
                 lucide.createIcons();
-            } catch (err) { 
-                container.innerHTML = '<p class="col-span-full text-center text-[#B11E1E]">Dergiler çekilirken sunucu hatası oluştu.</p>'; 
+            } catch (err) {
+                container.innerHTML = '<p class="col-span-full text-center text-[#B11E1E]">Dergiler çekilirken sunucu hatası oluştu.</p>';
             }
         }
+
+        // Sayfa yüklendiğinde ayarları çek
+        loadSettings();
     </script>
 </body>
+
 </html>
