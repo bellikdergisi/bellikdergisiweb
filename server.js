@@ -222,25 +222,29 @@ app.post('/api/admin/dergi-yukle', adminKontrol, upload.fields([{ name: 'kapak',
         const mailListesi = tumUyeler.map(uye => uye.email);
 
         if (mailListesi.length > 0) {
-            const mailOptions = {
-                from: `"Bellik Dergisi" <${process.env.EMAIL_USER}>`,
-                bcc: mailListesi,
-                subject: `🔥 Yeni Sayımız Yayında: ${baslik}!`,
-                html: `
-                    <div style="font-family: Arial, sans-serif; max-w-md; margin: auto; padding: 20px; border: 1px solid #eee;">
-                        <h2 style="color: #B11E1E; text-transform: uppercase;">Merhaba Bellik Okuru!</h2>
-                        <p>Heyecanla beklenen <strong>${sayiNo} numaralı ${baslik}</strong> an itibariyle sitemizde yayına girdi.</p>
-                        <p style="color: #555;"><i>${aciklama}</i></p>
-                        <p>Hemen okumak veya PDF olarak indirmek için aşağıdaki butona tıklayarak sitemize gidebilirsin:</p>
-                        <a href="https://www.bellikdergisi.com" style="display: inline-block; background-color: #B11E1E; color: white; padding: 10px 20px; text-decoration: none; font-weight: bold; margin-top: 15px; text-transform: uppercase; font-size: 12px;">Hemen Oku</a>
-                        <br><br>
-                        <p style="font-size: 12px; color: #999;">Keyifli okumalar dileriz,<br>Bellik Dergisi Ekibi</p>
-                    </div>
-                `
-            };
-            transporter.sendMail(mailOptions, (err, info) => {
-                if (err) console.log('Üyelere mail hatası:', err);
-            });
+            // BCC yerine teker teker gönderim veya küçük gruplar halinde gönderim yapılmalı. SPAM filtresini aşmak için.
+            // Bütün kullanıcılara aynı maili teker teker atıyoruz.
+            for (let i = 0; i < mailListesi.length; i++) {
+                const mailOptions = {
+                    from: `"Bellik Dergisi" <${process.env.EMAIL_USER}>`,
+                    to: mailListesi[i], // tek tek veya bcc de 50'şerli eklenebilir. Şimdilik tek tek daha güvenli.
+                    subject: `🔥 Yeni Sayımız Yayında: ${baslik}!`,
+                    html: `
+                        <div style="font-family: Arial, sans-serif; max-w-md; margin: auto; padding: 20px; border: 1px solid #eee;">
+                            <h2 style="color: #B11E1E; text-transform: uppercase;">Merhaba Bellik Okuru!</h2>
+                            <p>Heyecanla beklenen <strong>${sayiNo} numaralı ${baslik}</strong> an itibariyle sitemizde yayına girdi.</p>
+                            <p style="color: #555;"><i>${aciklama}</i></p>
+                            <p>Hemen okumak için aşağıdaki butona tıklayarak sitemize gidebilirsin:</p>
+                            <a href="https://www.bellikdergisi.com" style="display: inline-block; background-color: #B11E1E; color: white; padding: 10px 20px; text-decoration: none; font-weight: bold; margin-top: 15px; text-transform: uppercase; font-size: 12px;">Hemen Oku</a>
+                            <br><br>
+                            <p style="font-size: 12px; color: #999;">Keyifli okumalar dileriz,<br>Bellik Dergisi Ekibi</p>
+                        </div>
+                    `
+                };
+                transporter.sendMail(mailOptions, (err, info) => {
+                    if (err) console.log(`Üyeye (${mailListesi[i]}) mail hatası:`, err);
+                });
+            }
         }
         res.status(201).json({ mesaj: 'Dergi başarıyla yüklendi ve üyelere e-posta gönderildi! 🎉' });
     } catch (error) { res.status(500).json({ mesaj: 'Dergi yüklenirken hata oluştu.' }); }
