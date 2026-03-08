@@ -135,7 +135,7 @@
                             incelediğimiz dijital kütüphanemizi keşfedin.
                         </p>
                         <div class="flex flex-col sm:flex-row gap-6 pt-6">
-                            <button onclick="showView('reader')"
+                            <button onclick="showView('issues')"
                                 class="bg-[#B11E1E] text-white px-12 py-5 font-bold tracking-[0.2em] uppercase text-xs hover:bg-black transition-all duration-500 shadow-xl">OKUMAYA
                                 BAŞLA</button>
                             <button onclick="showView('issues')"
@@ -221,10 +221,11 @@
             </div>
         </section>
 
-        <section id="view-reader" class="view-section animate-fadeIn fixed inset-0 z-[100] bg-[#0a0a0a] text-white">
-            <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-24 border-b border-white/5">
+        <section id="view-reader"
+            class="view-section animate-fadeIn fixed inset-0 z-[100] bg-[#0a0a0a]/95 text-white backdrop-blur-sm">
+            <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-20 border-b border-white/5">
                 <button onclick="showView('issues')"
-                    class="hover:text-[#B11E1E] font-bold tracking-widest text-[10px] flex items-center">
+                    class="hover:text-[#B11E1E] font-bold tracking-widest text-[10px] flex items-center bg-black/50 px-4 py-2 rounded">
                     <i data-lucide="x" class="mr-3 w-4 h-4"></i> KAPAT
                 </button>
                 <div class="text-center transform scale-75">
@@ -232,36 +233,12 @@
                         <img src="BellikBeyaz.png" alt="Bellik Dergisi Logo" class="h-10 w-auto opacity-80">
                     </div>
                 </div>
-                <button
-                    class="text-[10px] font-bold tracking-widest border border-white/10 px-6 py-2 hover:bg-white hover:text-black transition-colors">PDF
-                    İNDİR</button>
+                <!-- İndir butonu kaldırıldı -->
+                <div class="w-20"></div>
             </div>
-            <div class="max-w-4xl mx-auto px-4 py-12">
-                <div
-                    class="bg-white text-black min-h-[75vh] shadow-2xl relative flex flex-col items-center justify-center p-12 overflow-hidden">
-                    <div class="w-full h-full border border-black/5 p-8 flex flex-col text-center">
-                        <div class="flex justify-between items-start mb-16">
-                            <span class="text-[10px] font-black tracking-widest text-[#B11E1E]">Bellik.</span>
-                            <span id="page-number" class="text-[10px] font-mono text-gray-300">SAYFA 1</span>
-                        </div>
-                        <div class="flex-grow flex flex-col justify-center">
-                            <h4 class="text-6xl md:text-8xl font-light tracking-tighter mb-8 uppercase megrim">Sayı
-                                İçeriği</h4>
-                            <p class="text-gray-400 italic max-w-md mx-auto">"Marka dünyasının kalbine yolculuğumuz
-                                devam ediyor."</p>
-                        </div>
-                        <div
-                            class="mt-16 pt-6 border-t border-gray-100 uppercase text-[9px] font-bold tracking-widest text-gray-300">
-                            2 Aylık Marka Dergisi</div>
-                    </div>
-                </div>
-                <div class="mt-8 flex justify-center items-center space-x-12">
-                    <button class="text-[10px] font-bold tracking-widest uppercase hover:text-[#B11E1E]"
-                        onclick="updatePage(-1)">ÖNCEKİ</button>
-                    <span id="page-display" class="text-sm font-light">1 / 32</span>
-                    <button class="text-[10px] font-bold tracking-widest uppercase hover:text-[#B11E1E]"
-                        onclick="updatePage(1)">SONRAKİ</button>
-                </div>
+            <div class="w-full h-[calc(100vh-5rem)] flex justify-center items-center p-4 md:p-8">
+                <iframe id="pdf-iframe" src="" class="w-full max-w-5xl h-full rounded shadow-2xl border border-white/10"
+                    frameborder="0"></iframe>
             </div>
         </section>
 
@@ -464,7 +441,7 @@
     <script>
         lucide.createIcons();
 
-        function showView(viewId) {
+        function showView(viewId, pdfUrl = null) {
             const views = document.querySelectorAll('.view-section');
             views.forEach(v => v.classList.remove('active'));
             document.getElementById('view-' + viewId).classList.add('active');
@@ -476,9 +453,13 @@
             if (viewId === 'reader') {
                 footer.style.display = 'none';
                 document.body.style.overflow = 'hidden';
+                if (pdfUrl) {
+                    document.getElementById('pdf-iframe').src = pdfUrl + "#toolbar=0&navpanes=0&scrollbar=0";
+                }
             } else {
                 footer.style.display = 'block';
                 document.body.style.overflow = 'auto';
+                document.getElementById('pdf-iframe').src = "";
             }
 
             document.getElementById('mobile-menu').classList.add('hidden');
@@ -488,11 +469,7 @@
         function toggleMenu() { document.getElementById('mobile-menu').classList.toggle('hidden'); }
 
         let currentPage = 1;
-        function updatePage(dir) {
-            currentPage = Math.max(1, Math.min(32, currentPage + dir));
-            document.getElementById('page-number').innerText = 'SAYFA ' + currentPage;
-            document.getElementById('page-display').innerText = currentPage + ' / 32';
-        }
+        // updatePage fonksiyonu iframe yapısı sebebiyle kaldırıldı.
 
         async function checkAuthAndRedirect() {
             const token = localStorage.getItem('token');
@@ -622,12 +599,13 @@
         }
 
         // YENİ EKLENEN KISIM: Ziyaretçi tıklayınca okunma sayısını arttırır
-        async function okunmaArttir(id) {
+        async function okunmaArttir(id, pdfUrl) {
             fetch(`/api/dergi/${id}/okunma`, { method: 'POST' }).catch(err => console.log(err));
             const token = localStorage.getItem('token');
             if (token) {
                 fetch(`/api/kullanici/okudum/${id}`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } }).catch(e => { });
             }
+            showView('reader', pdfUrl);
         }
 
         async function kaydetHakkimda() {
@@ -731,7 +709,7 @@
                         <div class="relative aspect-[3/4] w-full overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 bg-gray-100 mb-8 border border-gray-100">
                             <img src="${d.kapakGorseli}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="${d.baslik}">
                             <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-6">
-                                <a href="${d.pdfDosyasi}" target="_blank" onclick="okunmaArttir('${d._id}')" class="bg-white text-black px-8 py-4 text-[10px] font-bold tracking-[0.3em] uppercase hover:bg-[#B11E1E] hover:text-white transition-colors shadow-xl">DERGİYİ OKU / İNDİR</a>
+                                <a href="javascript:void(0)" onclick="okunmaArttir('${d._id}', '${d.pdfDosyasi}')" class="bg-white text-black px-8 py-4 text-[10px] font-bold tracking-[0.3em] uppercase hover:bg-[#B11E1E] hover:text-white transition-colors shadow-xl">DERGİYİ OKU</a>
                             </div>
                         </div>
                         <div class="space-y-3">

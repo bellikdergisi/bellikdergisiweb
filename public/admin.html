@@ -113,10 +113,18 @@
                 <button onclick="switchTab('bloglar')" class="hover:text-[#B11E1E] transition-colors">Bloglar</button>
                 <button onclick="switchTab('ayarlar')" class="hover:text-[#B11E1E] transition-colors">Ayarlar</button>
                 <button onclick="window.location.href='/'"
-                    class="text-gray-400 hover:text-white border-l border-gray-700 pl-6">Siteye Dön</button>
+                    class="text-gray-400 hover:text-white border-l border-gray-700 pl-6">Ana Sayfaya Dön</button>
+                <button onclick="adminLogout()"
+                    class="text-[#B11E1E] hover:text-white border-l border-gray-700 pl-6">Çıkış Yap</button>
             </div>
         </div>
     </nav>
+    <script>
+        function adminLogout() {
+            localStorage.removeItem('token');
+            window.location.href = '/admin';
+        }
+    </script>
 
     <main class="max-w-7xl mx-auto px-4 py-12">
 
