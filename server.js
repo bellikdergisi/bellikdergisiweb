@@ -35,7 +35,20 @@ const storage = multer.diskStorage({
         cb(null, 'public/uploads')
     },
     filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname.replace(/\s+/g, '-'));
+        // Dosya isminden Türkçe karakterleri ve özel karakterleri temizleyen harita
+        const trMap = {
+            'ç': 'c', 'ğ': 'g', 'ı': 'i', 'ö': 'o', 'ş': 's', 'ü': 'u',
+            'Ç': 'C', 'Ğ': 'G', 'İ': 'I', 'Ö': 'O', 'Ş': 'S', 'Ü': 'U'
+        };
+        // Multer bazen stringleri latin1 formatında alır, onu utf8'e çevirip düzeltiyoruz.
+        let originalName = Buffer.from(file.originalname, 'latin1').toString('utf8');
+
+        let safeName = originalName.replace(/[çğğıöşüÇĞİÖŞÜ]/g, match => trMap[match] || match) // Türkçe karakterleri değiştir
+            .replace(/[^a-zA-Z0-9.-]/g, '-') // Harf, rakam, nokta, tire dışındakileri tire yap
+            .replace(/-+/g, '-') // Yan yana birden fazla tire varsa tek tireye indir
+            .replace(/^-|-$/g, ''); // Başta veya sonda tire varsa temizle
+
+        cb(null, Date.now() + '-' + safeName);
     }
 });
 const upload = multer({ storage: storage });
