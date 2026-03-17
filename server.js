@@ -11,7 +11,6 @@ const cloudinary = require('cloudinary').v2;
 const nodemailer = require('nodemailer');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const mongoSanitize = require('express-mongo-sanitize');
 require('dotenv').config();
 
 // Cloudinary Yapılandırması
@@ -35,7 +34,6 @@ app.use(helmet({
     contentSecurityPolicy: false,
     crossOriginEmbedderPolicy: false
 }));
-app.use(mongoSanitize());
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
