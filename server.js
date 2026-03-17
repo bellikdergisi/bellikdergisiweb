@@ -6,8 +6,20 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('cloudinary').v2;
 const nodemailer = require('nodemailer');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const mongoSanitize = require('express-mongo-sanitize');
 require('dotenv').config();
+
+// Cloudinary Yapılandırması
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 // Kalıplarımızı çağırıyoruz
 const User = require('./models/User');
@@ -19,9 +31,24 @@ const Setting = require('./models/Setting');
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false
+}));
+app.use(mongoSanitize());
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    message: { mesaj: "Çok fazla istek gönderdiniz, lütfen 15 dakika sonra tekrar deneyin." }
+});
+
+app.use('/api/register', limiter);
+app.use('/api/login', limiter);
+app.use('/api/admin/login', limiter);
 
 // === MONGODB VERİTABANI BAĞLANTISI ===
 mongoose.connect(process.env.MONGO_URI)
@@ -29,26 +56,29 @@ mongoose.connect(process.env.MONGO_URI)
     .catch((err) => console.log('❌ Veritabanı bağlantı hatası:', err.message));
 
 
-// === MULTER (DOSYA YÜKLEME) AYARLARI ===
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'public/uploads')
-    },
-    filename: function (req, file, cb) {
-        // Dosya isminden Türkçe karakterleri ve özel karakterleri temizleyen harita
-        const trMap = {
-            'ç': 'c', 'ğ': 'g', 'ı': 'i', 'ö': 'o', 'ş': 's', 'ü': 'u',
-            'Ç': 'C', 'Ğ': 'G', 'İ': 'I', 'Ö': 'O', 'Ş': 'S', 'Ü': 'U'
-        };
-        // Multer bazen stringleri latin1 formatında alır, onu utf8'e çevirip düzeltiyoruz.
-        let originalName = Buffer.from(file.originalname, 'latin1').toString('utf8');
+// === MULTER (CLOUD DOSYA YÜKLEME) AYARLARI ===
+const trMap = {
+    'ç': 'c', 'ğ': 'g', 'ı': 'i', 'ö': 'o', 'ş': 's', 'ü': 'u',
+    'Ç': 'C', 'Ğ': 'G', 'İ': 'I', 'Ö': 'O', 'Ş': 'S', 'Ü': 'U'
+};
 
-        let safeName = originalName.replace(/[çğğıöşüÇĞİÖŞÜ]/g, match => trMap[match] || match) // Türkçe karakterleri değiştir
-            .replace(/[^a-zA-Z0-9.-]/g, '-') // Harf, rakam, nokta, tire dışındakileri tire yap
-            .replace(/-+/g, '-') // Yan yana birden fazla tire varsa tek tireye indir
-            .replace(/^-|-$/g, ''); // Başta veya sonda tire varsa temizle
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'bellik_uploads',
+        allowed_formats: ['jpg', 'png', 'jpeg', 'webp', 'pdf'],
+        resource_type: 'auto', // PDF ve rsimlerin karışık yönetilmesi için otomatik bırakıyoruz
+        public_id: (req, file) => {
+            let originalName = Buffer.from(file.originalname, 'latin1').toString('utf8');
+            let safeName = originalName.replace(/[çğğıöşüÇĞİÖŞÜ]/g, match => trMap[match] || match)
+                .replace(/[^a-zA-Z0-9.-]/g, '-')
+                .replace(/\.+/g, '.')
+                .replace(/-+/g, '-')
+                .replace(/^-|-$/g, '')
+                .replace(/\.(pdf|jpeg|jpg|png|webp)$/i, ''); // Uzantıyı sil, cloudinary kendi eklesin
 
-        cb(null, Date.now() + '-' + safeName);
+            return Date.now() + '-' + safeName;
+        }
     }
 });
 const upload = multer({ storage: storage });
@@ -225,8 +255,9 @@ app.delete('/api/admin/dergi/:id', adminKontrol, async (req, res) => {
 app.post('/api/admin/dergi-yukle', adminKontrol, upload.fields([{ name: 'kapak', maxCount: 1 }, { name: 'pdf', maxCount: 1 }]), async (req, res) => {
     try {
         const { sayiNo, baslik, aciklama } = req.body;
-        const kapakGorseli = '/uploads/' + req.files['kapak'][0].filename;
-        const pdfDosyasi = '/uploads/' + req.files['pdf'][0].filename;
+        // cloudinary path olarak saklıyor linki
+        const kapakGorseli = req.files['kapak'][0].path;
+        const pdfDosyasi = req.files['pdf'][0].path;
 
         const yeniDergi = new Issue({ sayiNo, baslik, aciklama, kapakGorseli, pdfDosyasi });
         await yeniDergi.save();
@@ -235,12 +266,12 @@ app.post('/api/admin/dergi-yukle', adminKontrol, upload.fields([{ name: 'kapak',
         const mailListesi = tumUyeler.map(uye => uye.email);
 
         if (mailListesi.length > 0) {
-            // BCC yerine teker teker gönderim veya küçük gruplar halinde gönderim yapılmalı. SPAM filtresini aşmak için.
-            // Bütün kullanıcılara aynı maili teker teker atıyoruz.
-            for (let i = 0; i < mailListesi.length; i++) {
+            const batchSize = 50;
+            for (let i = 0; i < mailListesi.length; i += batchSize) {
+                const batchEmails = mailListesi.slice(i, i + batchSize);
                 const mailOptions = {
                     from: `"Bellik Dergisi" <${process.env.EMAIL_USER}>`,
-                    to: mailListesi[i], // tek tek veya bcc de 50'şerli eklenebilir. Şimdilik tek tek daha güvenli.
+                    bcc: batchEmails.join(','),
                     subject: `🔥 Yeni Sayımız Yayında: ${baslik}!`,
                     html: `
                         <div style="font-family: Arial, sans-serif; max-w-md; margin: auto; padding: 20px; border: 1px solid #eee;">
@@ -254,9 +285,13 @@ app.post('/api/admin/dergi-yukle', adminKontrol, upload.fields([{ name: 'kapak',
                         </div>
                     `
                 };
-                transporter.sendMail(mailOptions, (err, info) => {
-                    if (err) console.log(`Üyeye (${mailListesi[i]}) mail hatası:`, err);
-                });
+                
+                // await ile gönderiyoruz ki spama düşmesin çok hızlı gidip patlamasın.
+                try {
+                    await transporter.sendMail(mailOptions);
+                } catch (mailErr) {
+                    console.log('Toplu mail hatası:', mailErr);
+                }
             }
         }
         res.status(201).json({ mesaj: 'Dergi başarıyla yüklendi ve üyelere e-posta gönderildi! 🎉' });
@@ -314,7 +349,7 @@ app.get('/api/blog/:id', async (req, res) => {
 app.post('/api/admin/blog', adminKontrol, upload.single('kapak'), async (req, res) => {
     try {
         const { baslik, kategori, ozet, icerik } = req.body;
-        const kapakGorseli = req.file ? '/uploads/' + req.file.filename : '';
+        const kapakGorseli = req.file ? req.file.path : '';
         const yeniBlog = new Blog({ baslik, kategori, ozet, icerik, kapakGorseli });
         await yeniBlog.save();
         res.json({ mesaj: 'Blog eklendi' });
