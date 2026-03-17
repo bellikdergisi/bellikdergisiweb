@@ -369,6 +369,17 @@
                             value="Tasarımı Stratejiyle Buluşturuyoruz.">
                     </div>
                     <div>
+                        <label class="block text-[10px] font-bold tracking-widest uppercase text-gray-500 mb-2 mt-4 text-[#B11E1E]">Ana
+                            Sayfa Seçili Dergi Kapağı</label>
+                        <select id="ayar-hero-dergi-secim" class="w-full border border-gray-200 p-3 text-sm focus:outline-none focus:border-[#B11E1E] bg-zinc-50 font-bold">
+                            <option value="">-- Varsayılan Kırmızı Logo Göster --</option>
+                            <!-- JavaScript ile doldurulacak -->
+                        </select>
+                        <input type="hidden" id="ayar-hero-cover" class="ayarlar-input">
+                        <input type="hidden" id="ayar-hero-pdf" class="ayarlar-input">
+                        <input type="hidden" id="ayar-hero-badge" class="ayarlar-input">
+                    </div>
+                    <div>
                         <label
                             class="block text-[10px] font-bold tracking-widest uppercase text-gray-500 mb-2">Hakkımızda:
                             Açıklama</label>
@@ -465,15 +476,45 @@
                 `).join('');
                 document.getElementById('liste-basvurular').innerHTML = appHTML || '<p class="text-sm text-gray-500 font-light italic col-span-2">Hiç başvuru bulunmuyor.</p>';
 
-                // 5. Ayarlar
+                // 5. Ayarlar (Ve dinamik dergi seçimi doldurma)
                 try {
+                    const dergiSelect = document.getElementById('ayar-hero-dergi-secim');
+                    dergiSelect.innerHTML = '<option value="">-- Varsayılan Kırmızı Logo Göster --</option>';
+                    dergiler.forEach(d => {
+                        const opt = document.createElement('option');
+                        opt.value = JSON.stringify({ kapak: d.kapakGorseli, pdf: d.pdfDosyasi, badge: d.sayiNo });
+                        opt.text = d.baslik + ' (Sayı: ' + d.sayiNo + ')';
+                        dergiSelect.appendChild(opt);
+                    });
+
                     const setRes = await fetch('/api/settings');
                     const ayarlar = await setRes.json();
+                    
+                    let heroCover = '', heroPdf = '', heroBadge = '';
+
                     ayarlar.forEach(ayar => {
                         const el = document.getElementById(ayar.anahtar);
                         if (el) el.value = ayar.deger;
+
+                        if(ayar.anahtar === 'ayar-hero-cover') heroCover = ayar.deger;
+                        if(ayar.anahtar === 'ayar-hero-pdf') heroPdf = ayar.deger;
+                        if(ayar.anahtar === 'ayar-hero-badge') heroBadge = ayar.deger;
                     });
-                } catch (e) { }
+
+                    // Eğer veritabanında daha önceden ayarlanmış bir cover varsa dropdown'u ona göre select yap
+                    if(heroCover) {
+                        for(let i=0; i<dergiSelect.options.length; i++) {
+                            try {
+                                const valObj = JSON.parse(dergiSelect.options[i].value);
+                                if(valObj.kapak === heroCover) {
+                                    dergiSelect.selectedIndex = i;
+                                    break;
+                                }
+                            } catch(e){}
+                        }
+                    }
+
+                } catch (e) { console.error('Ayarlar yüklenemedi', e); }
 
                 // 6. Bloglar
                 try {
@@ -547,6 +588,19 @@
         }
 
         async function ayarlariKaydet() {
+            // Dropdowndan gelen json formatındaki değeri ana inputlara yazdırıyoruz
+            const dergiSelect = document.getElementById('ayar-hero-dergi-secim');
+            if(dergiSelect.value) {
+                const dergiData = JSON.parse(dergiSelect.value);
+                document.getElementById('ayar-hero-cover').value = dergiData.kapak;
+                document.getElementById('ayar-hero-pdf').value = dergiData.pdf;
+                document.getElementById('ayar-hero-badge').value = dergiData.badge;
+            } else {
+                document.getElementById('ayar-hero-cover').value = 'Bellik Kırmızı.png';
+                document.getElementById('ayar-hero-pdf').value = '';
+                document.getElementById('ayar-hero-badge').value = '-';
+            }
+
             const inputs = document.querySelectorAll('.ayarlar-input');
             const ayarlarData = [];
             inputs.forEach(input => {

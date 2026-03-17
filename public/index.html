@@ -109,14 +109,15 @@
                             <div
                                 class="absolute -inset-6 bg-[#B11E1E]/10 rounded-xl blur-3xl group-hover:bg-[#B11E1E]/20 transition-all">
                             </div>
-                            <img id="hero-cover"
-                                src="https://images.unsplash.com/photo-1569154941061-e231b4725ef1?auto=format&fit=crop&w=800&q=80"
+                            <img id="dyn-hero-cover"
+                                src="Bellik Kırmızı.png"
+                                onerror="this.src='Bellik Kırmızı.png'; this.onerror=null;"
                                 alt="Son Sayı"
-                                class="relative w-full max-w-[450px] aspect-[3/4] object-cover shadow-[30px_30px_70px_rgba(0,0,0,0.15)] hover:-translate-y-4 transition-transform duration-700">
+                                class="relative w-full max-w-[450px] aspect-[3/4] object-cover shadow-[30px_30px_70px_rgba(0,0,0,0.15)] hover:-translate-y-4 transition-transform duration-700 bg-white">
                             <div class="absolute top-10 -right-10 bg-black text-white p-6 hidden md:block">
                                 <span class="text-[10px] font-black uppercase tracking-widest block mb-2 opacity-50">Son
                                     Yayın</span>
-                                <span class="text-3xl font-light tracking-tighter leading-none">#01</span>
+                                <span class="text-3xl font-light tracking-tighter leading-none" id="dyn-hero-badge">#01</span>
                             </div>
                         </div>
                     </div>
@@ -128,14 +129,14 @@
                         </div>
                         <h1 class="text-5xl md:text-7xl font-light tracking-tighter leading-tight uppercase">
                             <span id="dyn-hero-title">Bellik Dergisi</span> <br> <span id="dyn-hero-subtitle"
-                                class="text-[#B11E1E]">THY Sayısı</span>
+                                class="text-[#B11E1E]">Yeni Sayı</span>
                         </h1>
                         <p id="dyn-hero-desc" class="text-gray-400 text-xl font-light max-w-lg leading-relaxed">
                             İkonik markaların tasarım felsefelerini ve stratejik vizyonlarını derinlemesine
                             incelediğimiz dijital kütüphanemizi keşfedin.
                         </p>
                         <div class="flex flex-col sm:flex-row gap-6 pt-6">
-                            <button onclick="showView('issues')"
+                            <button id="dyn-hero-read-btn" onclick="showView('issues')"
                                 class="bg-[#B11E1E] text-white px-12 py-5 font-bold tracking-[0.2em] uppercase text-xs hover:bg-black transition-all duration-500 shadow-xl">OKUMAYA
                                 BAŞLA</button>
                             <button onclick="showView('issues')"
@@ -634,13 +635,38 @@
             try {
                 const res = await fetch('/api/settings');
                 const ayarlar = await res.json();
+                
+                let heroCoverUrl = 'Bellik Kırmızı.png';
+                let heroPdfUrl = null;
+                let heroBadge = '#01';
+
                 ayarlar.forEach(ayar => {
-                    const key = ayar.anahtar.replace('ayar-', 'dyn-');
-                    const el = document.getElementById(key);
-                    if (el) {
-                        el.innerText = ayar.deger;
+                    if (ayar.anahtar === 'ayar-hero-cover') {
+                        heroCoverUrl = ayar.deger;
+                    } else if (ayar.anahtar === 'ayar-hero-pdf') {
+                        heroPdfUrl = ayar.deger;
+                    } else if (ayar.anahtar === 'ayar-hero-badge') {
+                        heroBadge = ayar.deger;
+                    } else {
+                        const key = ayar.anahtar.replace('ayar-', 'dyn-');
+                        const el = document.getElementById(key);
+                        if (el) {
+                            el.innerText = ayar.deger;
+                        }
                     }
                 });
+
+                document.getElementById('dyn-hero-cover').src = heroCoverUrl;
+                document.getElementById('dyn-hero-badge').innerText = heroBadge;
+                
+                const readBtn = document.getElementById('dyn-hero-read-btn');
+                const coverContainer = document.getElementById('dyn-hero-cover').parentElement;
+                
+                if (heroPdfUrl) {
+                    readBtn.onclick = () => showView('reader', heroPdfUrl);
+                    coverContainer.onclick = () => showView('reader', heroPdfUrl);
+                }
+
             } catch (e) { }
         }
 
@@ -705,11 +731,11 @@
                     return;
                 }
 
-                // GÜNCELLENEN KISIM: A etiketine okunmaArttir fonksiyonu eklendi
+                // GÜNCELLENEN KISIM: A etiketine okunmaArttir fonksiyonu eklendi, Img etiketine onerror fallback eklendi.
                 container.innerHTML = dergiler.map(d => `
                     <div class="group flex flex-col items-center text-center animate-fadeIn">
-                        <div class="relative aspect-[3/4] w-full overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 bg-gray-100 mb-8 border border-gray-100">
-                            <img src="${d.kapakGorseli}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="${d.baslik}">
+                        <div class="relative aspect-[3/4] w-full overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 bg-gray-100 mb-8 border border-gray-100 flex items-center justify-center">
+                            <img src="${d.kapakGorseli}" onerror="this.src='Bellik Kırmızı.png'; this.onerror=null; this.classList.remove('object-cover'); this.classList.add('object-contain', 'p-8');" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="${d.baslik}">
                             <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-6">
                                 <a href="javascript:void(0)" onclick="okunmaArttir('${d._id}', '${d.pdfDosyasi}')" class="bg-white text-black px-8 py-4 text-[10px] font-bold tracking-[0.3em] uppercase hover:bg-[#B11E1E] hover:text-white transition-colors shadow-xl">DERGİYİ OKU</a>
                             </div>
