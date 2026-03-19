@@ -457,7 +457,25 @@
                 footer.style.display = 'none';
                 document.body.style.overflow = 'hidden';
                 if (pdfUrl) {
-                    document.getElementById('pdf-iframe').src = pdfUrl + "#toolbar=0&navpanes=0&scrollbar=0";
+                    let safePdfUrl = pdfUrl;
+                    
+                    // Güvenlik: http ise https'e çevir (Mixed content hatasını engellemek için)
+                    if (safePdfUrl.startsWith('http://')) {
+                        safePdfUrl = safePdfUrl.replace('http://', 'https://');
+                    }
+                    
+                    // Cloudinary, dosya adından .pdf silinince Content-Type header'ını yanlış verebiliyor.
+                    // Bu da tarayıcıda "Hata PDF dokümanı yüklenemedi" hatasına sebep oluyor.
+                    // URL sonuna .pdf ekleyerek tarayıcıyı PDF olduğuna ikna ediyoruz.
+                    try {
+                        let urlObj = new URL(safePdfUrl);
+                        if (urlObj.hostname.includes('cloudinary.com') && !urlObj.pathname.toLowerCase().endsWith('.pdf')) {
+                            urlObj.pathname += '.pdf';
+                            safePdfUrl = urlObj.toString();
+                        }
+                    } catch (e) {}
+
+                    document.getElementById('pdf-iframe').src = safePdfUrl + "#toolbar=0&navpanes=0&scrollbar=0";
                 }
             } else {
                 footer.style.display = 'block';
