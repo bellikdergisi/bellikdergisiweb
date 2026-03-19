@@ -273,6 +273,7 @@ app.post('/api/admin/dergi-yukle', adminKontrol, upload.fields([{ name: 'kapak',
                     const batchEmails = mailListesi.slice(i, i + batchSize);
                     const mailOptions = {
                         from: `"Bellik Dergisi" <${process.env.EMAIL_USER}>`,
+                        to: process.env.EMAIL_USER,
                         bcc: batchEmails.join(','),
                         subject: `🔥 Yeni Sayımız Yayında: ${baslik}!`,
                         html: `
