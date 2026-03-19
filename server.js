@@ -265,36 +265,39 @@ app.post('/api/admin/dergi-yukle', adminKontrol, upload.fields([{ name: 'kapak',
         const tumUyeler = await User.find({}, 'email');
         const mailListesi = tumUyeler.map(uye => uye.email);
 
+        res.status(201).json({ mesaj: 'Dergi başarıyla yüklendi! E-postalar arka planda gönderiliyor... 🎉' });
+
         if (mailListesi.length > 0) {
-            const batchSize = 50;
-            for (let i = 0; i < mailListesi.length; i += batchSize) {
-                const batchEmails = mailListesi.slice(i, i + batchSize);
-                const mailOptions = {
-                    from: `"Bellik Dergisi" <${process.env.EMAIL_USER}>`,
-                    to: process.env.EMAIL_USER,
-                    bcc: batchEmails.join(','),
-                    subject: `🔥 Yeni Sayımız Yayında: ${baslik}!`,
-                    html: `
-                        <div style="font-family: Arial, sans-serif; max-w-md; margin: auto; padding: 20px; border: 1px solid #eee;">
-                            <h2 style="color: #B11E1E; text-transform: uppercase;">Merhaba Bellik Okuru!</h2>
-                            <p>Heyecanla beklenen <strong>${sayiNo} numaralı ${baslik}</strong> an itibariyle sitemizde yayına girdi.</p>
-                            <p style="color: #555;"><i>${aciklama}</i></p>
-                            <p>Hemen okumak için aşağıdaki butona tıklayarak sitemize gidebilirsin:</p>
-                            <a href="https://www.bellikdergisi.com" style="display: inline-block; background-color: #B11E1E; color: white; padding: 10px 20px; text-decoration: none; font-weight: bold; margin-top: 15px; text-transform: uppercase; font-size: 12px;">Hemen Oku</a>
-                            <br><br>
-                            <p style="font-size: 12px; color: #999;">Keyifli okumalar dileriz,<br>Bellik Dergisi Ekibi</p>
-                        </div>
-                    `
-                };
-                
-                try {
-                    await transporter.sendMail(mailOptions);
-                } catch (mailErr) {
-                    console.log('Toplu mail hatası:', mailErr);
+            // BCC spama çok hızlı düştüğü için arka planda her kullanıcıya özel (TO: uye.email) olarak sırayla atıyoruz!
+            (async () => {
+                for (const email of mailListesi) {
+                    const mailOptions = {
+                        from: `"Bellik Dergisi" <${process.env.EMAIL_USER}>`,
+                        to: email, // Bireysel gönderim (Spam engelleme için altın kurallardan biri)
+                        subject: `🔥 Yeni Sayımız Yayında: ${baslik}!`,
+                        html: `
+                            <div style="font-family: Arial, sans-serif; max-w-md; margin: auto; padding: 20px; border: 1px solid #eee;">
+                                <h2 style="color: #B11E1E; text-transform: uppercase;">Merhaba Bellik Okuru!</h2>
+                                <p>Heyecanla beklenen <strong>${sayiNo} numaralı ${baslik}</strong> an itibariyle sitemizde yayına girdi.</p>
+                                <p style="color: #555;"><i>${aciklama}</i></p>
+                                <p>Hemen okumak için aşağıdaki butona tıklayarak sitemize gidebilirsin:</p>
+                                <a href="https://www.bellikdergisi.com" style="display: inline-block; background-color: #B11E1E; color: white; padding: 10px 20px; text-decoration: none; font-weight: bold; margin-top: 15px; text-transform: uppercase; font-size: 12px;">Hemen Oku</a>
+                                <br><br>
+                                <p style="font-size: 12px; color: #999;">Keyifli okumalar dileriz,<br>Bellik Dergisi Ekibi</p>
+                            </div>
+                        `
+                    };
+                    
+                    try {
+                        await transporter.sendMail(mailOptions);
+                        // Spam eşiğine takılmamak için her mail arasına bilerek 1000ms (1 saniye) gecikme koyuyoruz
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                    } catch (mailErr) {
+                        console.log('Bireysel mail hatası:', email, mailErr);
+                    }
                 }
-            }
+            })().catch(e => console.error("Arkaplan Mail Döngü Hatası:", e));
         }
-        res.status(201).json({ mesaj: 'Dergi başarıyla yüklendi ve üyelere e-posta gönderildi! 🎉' });
     } catch (error) { res.status(500).json({ mesaj: 'Dergi yüklenirken hata oluştu.' }); }
 });
 
