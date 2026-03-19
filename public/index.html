@@ -242,14 +242,14 @@
                 
                 <div class="flex-1 w-full flex justify-center items-center relative p-2 md:p-8 pb-20 md:pb-8">
                     <!-- Sol/Sağ Butonlar -->
-                    <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-2 md:px-12 z-20 pointer-events-none">
+                    <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-2 z-20 pointer-events-none">
                         <button id="btn-prev-page" class="bg-black/90 hover:bg-[#B11E1E] text-white p-3 md:p-5 rounded-full pointer-events-auto transition-colors disabled:opacity-30 shadow-2xl backdrop-blur-md" onclick="goToPrevPage()"><i data-lucide="chevron-left" class="w-6 h-6 md:w-8 md:h-8"></i></button>
                         <button id="btn-next-page" class="bg-black/90 hover:bg-[#B11E1E] text-white p-3 md:p-5 rounded-full pointer-events-auto transition-colors disabled:opacity-30 shadow-2xl backdrop-blur-md" onclick="goToNextPage()"><i data-lucide="chevron-right" class="w-6 h-6 md:w-8 md:h-8"></i></button>
                     </div>
 
                     <!-- PDF Canvas Alanı -->
                     <div class="relative w-full max-w-4xl h-full flex flex-col items-center justify-center overflow-hidden bg-[#111] rounded shadow-2xl border border-white/10">
-                        <canvas id="pdf-render" class="max-w-full max-h-full object-contain pointer-events-none drop-shadow-2xl"></canvas>
+                        <canvas id="pdf-render" style="width: 100%; height: 100%; object-fit: contain;" class="pointer-events-none drop-shadow-2xl"></canvas>
                         <div id="pdf-loading" class="absolute inset-0 flex flex-col items-center justify-center bg-[#0a0a0a]/90 text-white z-30">
                             <div id="pdf-spinner-icon"><i data-lucide="loader" class="w-8 h-8 animate-spin mb-4 text-[#B11E1E]"></i></div>
                             <p id="pdf-loading-text" class="text-[10px] font-bold tracking-[0.3em] uppercase">Dergi Yükleniyor...</p>
@@ -469,7 +469,7 @@
 
         // PDF.js Değişkenleri
         let pdfDoc = null, pageNum = 1, pageIsRendering = false, pageNumIsPending = null;
-        const scale = 1.6, canvas = document.getElementById('pdf-render'), ctx = canvas ? canvas.getContext('2d') : null;
+        const scale = 2.0, canvas = document.getElementById('pdf-render'), ctx = canvas ? canvas.getContext('2d') : null;
 
         const renderPage = num => {
             pageIsRendering = true;
