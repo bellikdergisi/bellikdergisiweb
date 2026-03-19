@@ -223,42 +223,44 @@
         </section>
 
         <section id="view-reader"
-            class="view-section animate-fadeIn fixed inset-0 z-[100] bg-[#0a0a0a]/95 text-white backdrop-blur-sm flex flex-col">
-            <div class="w-full px-4 flex justify-between items-center h-20 border-b border-white/5 shrink-0 z-10">
-                <button onclick="showView('issues')"
-                    class="hover:text-[#B11E1E] border border-transparent hover:border-[#B11E1E] transition-all font-bold tracking-widest text-[10px] flex items-center bg-black/50 px-4 py-2 rounded">
-                    <i data-lucide="x" class="mr-3 w-4 h-4"></i> KAPAT
-                </button>
-                <div class="text-center transform scale-75">
-                    <div class="logo-container">
-                        <img src="BellikBeyaz.png" alt="Bellik Dergisi Logo" class="h-10 w-auto opacity-80">
+            class="view-section animate-fadeIn fixed inset-0 z-[100] bg-[#0a0a0a]/95 text-white backdrop-blur-sm">
+            <div class="w-full h-full flex flex-col">
+                <div class="w-full px-4 flex justify-between items-center h-20 border-b border-white/5 shrink-0 z-10">
+                    <button onclick="showView('issues')"
+                        class="hover:text-[#B11E1E] border border-transparent hover:border-[#B11E1E] transition-all font-bold tracking-widest text-[10px] flex items-center bg-black/50 px-4 py-2 rounded">
+                        <i data-lucide="x" class="mr-3 w-4 h-4"></i> KAPAT
+                    </button>
+                    <div class="text-center transform scale-75">
+                        <div class="logo-container">
+                            <img src="BellikBeyaz.png" alt="Bellik Dergisi Logo" class="h-10 w-auto opacity-80">
+                        </div>
+                    </div>
+                    <div class="w-20 flex justify-end">
+                        <span id="page-num-display" class="bg-black/80 text-white px-3 py-1 rounded text-[10px] font-bold tracking-[0.2em] hidden md:block">0 / 0</span>
                     </div>
                 </div>
-                <div class="w-20 flex justify-end">
-                    <span id="page-num-display" class="bg-black/80 text-white px-3 py-1 rounded text-[10px] font-bold tracking-[0.2em] hidden md:block">0 / 0</span>
-                </div>
-            </div>
-            
-            <div class="flex-1 w-full flex justify-center items-center relative p-2 md:p-8 pb-20 md:pb-8">
-                <!-- Sol/Sağ Butonlar -->
-                <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-2 md:px-12 z-20 pointer-events-none">
-                    <button id="btn-prev-page" class="bg-black/90 hover:bg-[#B11E1E] text-white p-3 md:p-5 rounded-full pointer-events-auto transition-colors disabled:opacity-30 shadow-2xl backdrop-blur-md" onclick="goToPrevPage()"><i data-lucide="chevron-left" class="w-6 h-6 md:w-8 md:h-8"></i></button>
-                    <button id="btn-next-page" class="bg-black/90 hover:bg-[#B11E1E] text-white p-3 md:p-5 rounded-full pointer-events-auto transition-colors disabled:opacity-30 shadow-2xl backdrop-blur-md" onclick="goToNextPage()"><i data-lucide="chevron-right" class="w-6 h-6 md:w-8 md:h-8"></i></button>
-                </div>
+                
+                <div class="flex-1 w-full flex justify-center items-center relative p-2 md:p-8 pb-20 md:pb-8">
+                    <!-- Sol/Sağ Butonlar -->
+                    <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-2 md:px-12 z-20 pointer-events-none">
+                        <button id="btn-prev-page" class="bg-black/90 hover:bg-[#B11E1E] text-white p-3 md:p-5 rounded-full pointer-events-auto transition-colors disabled:opacity-30 shadow-2xl backdrop-blur-md" onclick="goToPrevPage()"><i data-lucide="chevron-left" class="w-6 h-6 md:w-8 md:h-8"></i></button>
+                        <button id="btn-next-page" class="bg-black/90 hover:bg-[#B11E1E] text-white p-3 md:p-5 rounded-full pointer-events-auto transition-colors disabled:opacity-30 shadow-2xl backdrop-blur-md" onclick="goToNextPage()"><i data-lucide="chevron-right" class="w-6 h-6 md:w-8 md:h-8"></i></button>
+                    </div>
 
-                <!-- PDF Canvas Alanı -->
-                <div class="relative w-full max-w-4xl h-full flex flex-col items-center justify-center overflow-hidden bg-[#111] rounded shadow-2xl border border-white/10">
-                    <canvas id="pdf-render" class="max-w-full max-h-full object-contain pointer-events-none drop-shadow-2xl"></canvas>
-                    <div id="pdf-loading" class="absolute inset-0 flex flex-col items-center justify-center bg-[#0a0a0a]/90 text-white z-30">
-                        <i data-lucide="loader" class="w-8 h-8 animate-spin mb-4 text-[#B11E1E]"></i>
-                        <p class="text-[10px] font-bold tracking-[0.3em] uppercase">Dergi Yükleniyor...</p>
-                        <p id="pdf-page-info" class="text-gray-400 mt-2 text-[10px] font-bold tracking-widest text-center px-4"></p>
+                    <!-- PDF Canvas Alanı -->
+                    <div class="relative w-full max-w-4xl h-full flex flex-col items-center justify-center overflow-hidden bg-[#111] rounded shadow-2xl border border-white/10">
+                        <canvas id="pdf-render" class="max-w-full max-h-full object-contain pointer-events-none drop-shadow-2xl"></canvas>
+                        <div id="pdf-loading" class="absolute inset-0 flex flex-col items-center justify-center bg-[#0a0a0a]/90 text-white z-30">
+                            <div id="pdf-spinner-icon"><i data-lucide="loader" class="w-8 h-8 animate-spin mb-4 text-[#B11E1E]"></i></div>
+                            <p id="pdf-loading-text" class="text-[10px] font-bold tracking-[0.3em] uppercase">Dergi Yükleniyor...</p>
+                            <p id="pdf-page-info" class="text-gray-400 mt-2 text-[10px] font-bold tracking-widest text-center px-4"></p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <!-- Mobil için alt sayfa numarası -->
-            <div class="absolute bottom-6 left-0 right-0 text-center z-10 md:hidden">
-                <span id="page-num-display-mobile" class="bg-black/80 text-white px-4 py-2 rounded-full text-[10px] font-bold tracking-[0.2em]">0 / 0</span>
+                <!-- Mobil için alt sayfa numarası -->
+                <div class="absolute bottom-6 left-0 right-0 text-center z-10 md:hidden">
+                    <span id="page-num-display-mobile" class="bg-black/80 text-white px-4 py-2 rounded-full text-[10px] font-bold tracking-[0.2em]">0 / 0</span>
+                </div>
             </div>
         </section>
 
@@ -508,6 +510,8 @@
 
         function loadPdfDocument(url) {
             document.getElementById('pdf-loading').style.display = 'flex';
+            document.getElementById('pdf-spinner-icon').style.display = 'block';
+            document.getElementById('pdf-loading-text').style.display = 'block';
             document.getElementById('pdf-page-info').innerText = "Veri indiriliyor...";
             document.getElementById('btn-prev-page').disabled = true;
             document.getElementById('btn-next-page').disabled = true;
@@ -519,6 +523,9 @@
                 pageNum = 1;
                 renderPage(pageNum);
             }).catch(err => {
+                document.getElementById('pdf-spinner-icon').style.display = 'none';
+                document.getElementById('pdf-loading-text').style.display = 'none';
+                
                 let errText = "Cloudinary güvenlik kısıtlaması (401). Dergi formatı izinli değil. Lütfen Cloudinary ayarlarından 'Allow delivery of PDF and ZIP files' seçeneğini etkinleştirin.";
                 document.getElementById('pdf-page-info').innerHTML = `<span class="text-[#B11E1E] font-bold">${errText}</span>`;
                 console.error("PDF Yükleme Hatası:", err);
